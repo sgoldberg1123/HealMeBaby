@@ -9,6 +9,7 @@ namespace WebAPI
     {
         public static void Register(HttpConfiguration config)
         {
+            //dammit karl
             config.MapHttpAttributeRoutes();
             config.Formatters.JsonFormatter.SupportedMediaTypes
                 .Add(new MediaTypeHeaderValue("text/html"));
