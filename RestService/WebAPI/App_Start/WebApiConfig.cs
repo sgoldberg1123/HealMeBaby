@@ -7,7 +7,6 @@ namespace WebAPI
 {
     public static class WebApiConfig
     {
-        //dammit karl
         public static void Register(HttpConfiguration config)
         {
             config.MapHttpAttributeRoutes();
