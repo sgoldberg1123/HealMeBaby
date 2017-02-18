@@ -5,14 +5,25 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using WebAPI.DBConn;
+using WebAPI.QueryObjects;
 namespace WebAPI.Controllers
 {
     public class UserController : ApiController
     {
-        public List<String> GetAll()
+        public List<User> GetAll()
         {
-            //UserRepo.getAllUsers();
-            return new List<String>() { "TEST", "Test2" };
+            return UserRepo.getAllUsers();
+        }
+        public User GetById(int id)
+        {
+            return UserRepo.getUserById(id);
+        }
+        [HttpPost]
+        public String postTest()
+        {
+            var content = Request.Content;
+            string jsonContent = content.ReadAsStringAsync().Result;
+            return jsonContent;
         }
     }
 }

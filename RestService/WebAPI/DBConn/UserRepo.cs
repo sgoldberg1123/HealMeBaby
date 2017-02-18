@@ -3,22 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using MySql.Data.MySqlClient;
+using WebAPI.QueryObjects;
+using System.Data;
+
 namespace WebAPI.DBConn
 {
     static class UserRepo
     {
-        public static void getAllUsers()
+        public static List<User> getAllUsers()
         {
-            System.Diagnostics.Debug.WriteLine("Test");
-            MySqlConnection conn = Conn.getHealthDBConn();
-            MySqlCommand cmd = conn.CreateCommand();
-            cmd.CommandText = "SELECT * from USER;";
-            MySqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+            DataTable table = HealthDBConn.simpleQuery("SELECT * FROM user;");
+            List<User> users = new List<User>();
+            if (table.Rows.Count >= 0)
             {
-                System.Diagnostics.Debug.WriteLine(reader["first_name"].ToString());
+                foreach (DataRow row in table.Rows)
+                {
+                    users.Add(new User(row));
+                }
             }
-            reader.Close();
+            return users;
+        }
+        public static User getUserById(int id)
+        {
+            List<Param> paramList = new List<Param>() { new Param("@id", id) };
+            DataTable table = HealthDBConn.paramQuery("SELECT * FROM user WHERE user.user_id = @id;", paramList);
+            if(table.Rows.Count > 0)
+            {
+                return new User(table.Rows[0]);
+            }
+            else
+            {
+                return null;
+            }
+            
         }
     }
 }
