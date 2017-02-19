@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using WebAPI.DBConn;
+using WebAPI.JsonObj;
 using WebAPI.QueryObjects;
 namespace WebAPI.Controllers
 {
@@ -19,11 +22,12 @@ namespace WebAPI.Controllers
             return UserRepo.getUserById(id);
         }
         [HttpPost]
-        public String postTest()
+        public void Add()
         {
-            var content = Request.Content;
-            string jsonContent = content.ReadAsStringAsync().Result;
-            return jsonContent;
+            HttpContent requestContent = Request.Content;
+            string jsonContent = requestContent.ReadAsStringAsync().Result;
+            NewUser user = JsonConvert.DeserializeObject<NewUser>(jsonContent);
+            UserRepo.insertUser(user);
         }
     }
 }

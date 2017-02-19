@@ -28,8 +28,8 @@ namespace WebAPI
             );
             config.Routes.MapHttpRoute(
                 name: "postTest",
-                routeTemplate: "api/{controller}/postTest",
-                defaults: new { action = "postTest"}
+                routeTemplate: "api/{controller}/add",
+                defaults: new { action = "Add"}
             );
         }
     }

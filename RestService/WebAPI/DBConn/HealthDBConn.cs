@@ -57,5 +57,23 @@ namespace WebAPI.DBConn
             }
             return table;
         }
+
+        public static void paramInsert(string queryString, List<Param> paramList)
+        {
+            using (MySqlConnection conn = new MySqlConnection(constr))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = queryString;
+                    foreach (Param param in paramList)
+                    {
+                        cmd.Parameters.AddWithValue(param.ParamName, param.ParamValue);
+                    }
+                    cmd.ExecuteReader();
+                }
+                conn.Close();
+            }
+        }
     }
 }
