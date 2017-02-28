@@ -8,25 +8,21 @@
     <link rel="shortcut icon" href="images/icon_ash.png" type="image/png" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/3.1.0/octicons.min.css">
-    <script src="http://platform.fatsecret.com/js?key=7441ba1fffe0492faf1142a92fbc6357"></script>
-    <!-- <script>
-        fatsecret.writeHolder("search");
-        fatsecret.writeHolder("Foodtitle");
-        fatsecret.writeHodler("nutritionpanel");
-    </script> -->
+    <script src="http://platform.fatsecret.com/js?key=7441ba1fffe0492faf1142a92fbc6357&auto_nav=false"></script>
+
     <script>
-			function doLoad(){
-				fatsecret.setContainer("my_container");
-				fatsecret.setCanvas("home");
-			}
-		</script>
+        fatsecret.setContainer("my_container");
+        fatsecret.setCanvas("home");
+        </script>
+
+
 
     <!--[if lt IE 9]>
       <script src="https://cdn.jsdelivr.net/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://cdn.jsdelivr.net/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body onload="doLoad()">
+  <body>
       <div class="container">
           <div class="row">
               <header class="page-header col-md-12">
@@ -54,7 +50,7 @@
                           </button>
                       </div>
                       <div class="collapse navbar-collapse" id="collapse-1">
-                          
+
                           <ul class="nav navbar-nav">
                               <li>
                                   <a href="index.html">Home</a>
@@ -89,10 +85,8 @@
           </div><!-- row -->
 
           <div class="row" >
-              <div style=";margin:0 auto;">
-                  <div id="my_container" class="fatsecret_container">
-                  </div>
-              </div>
+              <div id="my_container" class="fatsecret_container col-md-offset-2 col-md-8 col-sm-12"></div>
+
           </div> <!-- row -->
 
 
