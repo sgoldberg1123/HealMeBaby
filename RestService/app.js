@@ -53,7 +53,9 @@ app.get('/api/user/id', function(req, res){
 //Get all users
 app.get('/api/user/all', function(req, res){
   con.query('SELECT * FROM health.user',function(err,rows){
-    if(err) throw err;
+    if(err){
+      console.log(err);
+    }
     res.json(rows);
   });
 });
@@ -70,7 +72,7 @@ app.post('/api/user/insert', function(req, res){
         if(err.code === 'ER_DUP_ENTRY')
           res.json('User with this email already exists');
         else
-          throw err;
+          console.log(err);
       else
         res.json('SUCCESS');
     }
@@ -78,12 +80,15 @@ app.post('/api/user/insert', function(req, res){
 });
 
 app.post('/api/user/login', function(req, res){
+  console.log('Why no work?');
   var email = req.body.email;
   var password = req.body.password;
   con.query('SELECT * FROM health.user WHERE email = ? AND password = ?',
     [email, password],
     function(err, rows){
-      if(err) throw err;
+      if(err){
+        console.log(err);
+      }
       res.json(rows);
     }
   );
