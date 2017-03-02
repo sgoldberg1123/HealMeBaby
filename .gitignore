@@ -1,2 +1,3 @@
 .remote-sync.json
 .eslintrc.js
+node_modules/
