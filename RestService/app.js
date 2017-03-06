@@ -1,5 +1,5 @@
 var express = require('express');
-var mysql = require('mysql');
+var userRepo = require('./Repositories/userRepo');
 var bodyParser = require('body-parser');
 var app = new express();
 
@@ -17,13 +17,6 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(bodyParser.json());
-
-//Connect to database
-var con = mysql.createConnection({
-  host: '71.95.85.102',
-  user: 'test',
-  password: 'health123'
-});
 
 //TODO this is most definitely insecure will need to change it
 app.use(function(req, res, next) {
@@ -44,54 +37,27 @@ app.use(function(req, res, next) {
 //Arg id specifies id to
 app.get('/api/user/id', function(req, res){
   var id = req.query.id;
-  con.query('SELECT * FROM health.user WHERE user_id=?', [id], function(err, rows){
-    if(err) throw err;
-    res.json(rows);
+  userRepo.getById(id).then((data) => {
+    res.json(data);
   });
 });
 
 //Get all users
 app.get('/api/user/all', function(req, res){
-  con.query('SELECT * FROM health.user',function(err,rows){
-    if(err){
-      console.log(err);
-    }
-    res.json(rows);
+  userRepo.getAll().then((data) => {
+    res.json(data);
   });
 });
 
+//Insert user into database
 app.post('/api/user/insert', function(req, res){
   var firstName = req.body.firstName;
   var lastName = req.body.lastName;
   var email = req.body.email;
   var password = req.body.password;
-  con.query('INSERT INTO health.user (first_name, email, last_name, password) VALUES(?,?,?,?)',
-    [firstName, email, lastName, password],
-    function(err){
-      if(err)
-        if(err.code === 'ER_DUP_ENTRY')
-          res.json('User with this email already exists');
-        else
-          console.log(err);
-      else
-        res.json('SUCCESS');
-    }
-  );
-});
-
-app.post('/api/user/login', function(req, res){
-  console.log('Why no work?');
-  var email = req.body.email;
-  var password = req.body.password;
-  con.query('SELECT * FROM health.user WHERE email = ? AND password = ?',
-    [email, password],
-    function(err, rows){
-      if(err){
-        console.log(err);
-      }
-      res.json(rows);
-    }
-  );
+  userRepo.insertUser(firstName, lastName, email, password).then((data) => {
+    res.json(data);
+  });
 });
 
 // Start the server
