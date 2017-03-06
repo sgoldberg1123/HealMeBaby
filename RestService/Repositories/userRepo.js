@@ -62,7 +62,7 @@ module.exports = {
             }
           else
             resolve({
-              status:'SUCCESS',
+              status:'SUCCESS'
             });
         }
       );

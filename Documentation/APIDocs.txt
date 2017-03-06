@@ -1,0 +1,82 @@
+REST ENDPOINTS
+
+Title: 
+Insert User
+URL: 
+/api/user/insert
+METHOD: 
+POST
+URL PARAMS: 
+None
+DATA PARAMS: 
+firstName, lastName, email, password
+ERROR RESPONSES: 
+If user exists {status:'FAILED', info:'USER EXISTS'}
+Unknown error {status:'FAILED', info:'UNKNOWN ERROR'}
+SUCCESS RESPONSE:
+If user inserted {status:'SUCCESS'}
+SAMPLE REQUEST:
+$.post("http://<somehost>/api/user/insert",
+	{
+		firstName: <param>,
+		lastName: <param>,
+		email: <param>,
+		password: <param>,
+    	},
+    	function(data, status){
+        	console.log(data);
+    	});
+};
+
+TITLE: 
+Get All Users
+URL: 
+/api/user/all
+METHOD:
+GET
+URL PARAMS:
+None
+DATA PARAMS:
+None
+ERROR RESPONSES:
+Unknown error: {status:'FAILED', info: 'UNKNOWN ERROR'}
+SUCCESS RESPONSE: 
+If list of users found {status:'SUCCESS', data: <list Of Users>}
+SAMPLE REQUEST:
+$.get("http://192.168.56.101/api/user/all",
+    	function(data, status){
+        	console.log(data);
+	});
+};
+
+TITLE:
+Get User By Id
+URL:
+/api/user/id
+METHOD:
+GET
+URL PARAMS:
+id
+DATA PARAMS:
+None
+ERROR RESPONSES:
+Unknown error: {status:'FAILED', info: 'UNKNOWN ERROR'}
+SUCCESS RESPONSE:
+User found {status:'SUCCESS', data: <list of Users>}
+SAMPLE REQUEST:
+$.get("http://192.168.56.101/api/user/id", 
+	{id: 1},
+	function(data, status){
+        	console.log(data);
+	});
+};
+
+TITLE:
+URL:
+METHOD:
+URL PARAMS:
+DATA PARAMS:
+ERROR RESPONSES:
+SUCCESS RESPONSE:
+SAMPLE REQUEST:
+
