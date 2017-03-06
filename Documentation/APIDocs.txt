@@ -65,7 +65,7 @@ SUCCESS RESPONSE:
 User found {status:'SUCCESS', data: <list of Users>}
 SAMPLE REQUEST:
 $.get("http://192.168.56.101/api/user/id", 
-	{id: 1},
+	{id: <id of user>},
 	function(data, status){
         	console.log(data);
 	});
