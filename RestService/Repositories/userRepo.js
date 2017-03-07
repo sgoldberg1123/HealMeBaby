@@ -39,6 +39,25 @@ module.exports = {
     });
   },
 
+  //Get a single user by their id
+  checkUserExist: function(email, password){
+    return new Promise(function(resolve, reject){
+      dbConn.query('SELECT * FROM health.user WHERE email=? AND password=?', [email, password], function(err, rows){
+        if(err){
+          console.info(err);
+          reject({
+            status:'FAILED',
+            info: 'UNKNOWN ERROR'
+          });
+        }
+        if(rows.length >0 )
+          resolve(true);
+        else
+          resolve(false);
+      });
+    });
+  },
+
   //Insert a user into the database with the given values
   insertUser: function(firstName, lastName, email, password){
     return new Promise(function(resolve, reject){

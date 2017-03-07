@@ -1,6 +1,8 @@
 var express = require('express');
 var userRepo = require('./Repositories/userRepo');
 var bodyParser = require('body-parser');
+var session = require('express-session');
+var FileStore = require('session-file-store')(session);
 var app = new express();
 
 //   _____      _
@@ -10,7 +12,21 @@ var app = new express();
 //____) |  __/ |_| |_| | |_) |
 //|____/ \___|\__|\__,_| .__/
 //                    | |
-//                    |_|
+//                    |_
+var sess_options = {
+  path: './tmp/sessions/',  //directory where session files will be stored
+  useAsync: true,
+  reapInterval: 5000,
+  maxAge: 10000
+};
+
+app.use(session({
+  store: new FileStore(sess_options),
+  secret: 'KarlMarx',
+  resave: true,
+  saveUninitialized: false,
+  cookie: {secure : false}
+}));
 
 app.use(bodyParser.urlencoded({
   extended: true
@@ -44,6 +60,8 @@ app.get('/api/user/id', function(req, res){
 
 //Get all users
 app.get('/api/user/all', function(req, res){
+  console.info(req.session.username);
+  req.session.username = 'test';
   userRepo.getAll().then((data) => {
     res.json(data);
   });
@@ -57,6 +75,38 @@ app.post('/api/user/insert', function(req, res){
   var password = req.body.password;
   userRepo.insertUser(firstName, lastName, email, password).then((data) => {
     res.json(data);
+  });
+});
+
+app.get('/api/user/session', function(req, res){
+  if(req.session.username){
+    res.send(req.session);
+  }
+  else{
+    res.send('NO ACTIVE SESSION');
+  }
+});
+//Login with user based on email and password
+//Creates a session which stores email and password
+app.post('/api/user/login', function(req, res){
+  var email = req.body.email;
+  var password = req.body.password;
+  userRepo.checkUserExist(email, password).then((userExists) => {
+    if(userExists){
+      req.session.username = email;
+      req.session.password = password;
+      console.info(req.session.username);
+      console.info(email);
+      res.send({
+        status:'SUCCESS',
+      });
+    }
+    else{
+      res.send({
+        status:'FAILURE',
+        info:'USER NOT FOUND'
+      });
+    }
   });
 });
 
