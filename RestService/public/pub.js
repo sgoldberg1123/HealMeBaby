@@ -1,3 +1,4 @@
+//Insert a user into the database
 var insert = function(){
     var firstName = $('#firstNameInsert')[0].value;
     var lastName = $('#lastNameInsert')[0].value;
@@ -16,6 +17,7 @@ var insert = function(){
     });
 };
 
+//Login and create a session with the given information
 var login = function(){
     var email = $('#emailLogin')[0].value;
     var password = $('#passwordLogin')[0].value;
@@ -32,4 +34,18 @@ var login = function(){
 		console.log('User Not Found');
 	}
     });
+};
+
+//Get all meals for a given user
+var getAllUserMeals = function(){
+  return new Promise(function(resolve, reject){
+    $.get('/user/meals', function(data, status){
+      if(data.status == 'FAILED'){
+        reject();
+      }
+      else{
+        resolve(data.rows);
+      }
+    });
+  });
 };
