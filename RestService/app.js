@@ -1,115 +1,46 @@
-var express = require('express');
-var userRepo = require('./Repositories/userRepo');
-var bodyParser = require('body-parser');
-var session = require('express-session');
-var FileStore = require('session-file-store')(session);
+// config and package imports ===================================================
+var express = require('express');                 // nodejs framework
+var port = 8080;                                  // port
+var passport = require('passport');               // authentication middleware
+var flash = require('connect-flash');             // auth error messages through passport
+var morgan = require('morgan');                   // console logging logging
+var cookieParser = require('cookie-parser');      // parse cookie info
+var bodyParser = require('body-parser');          // parse body and html forms
+var session = require('express-session');         // web session info
+var MySQLStore = require('express-mysql-session')(session);   // store sessions
+var options = require('./config/config');       // database connection info
+var sessionStore = new MySQLStore(options.sess);  // session storage in db
+require('./config/passport')(passport);           // passport configuration
+
+
+// set up application ===========================================================
 var app = new express();
-
-//   _____      _
-// / ____|    | |
-//| (___   ___| |_ _   _ _ __
-//\____ \ / _ \ __| | | | '_ \
-//____) |  __/ |_| |_| | |_) |
-//|____/ \___|\__|\__,_| .__/
-//                    | |
-//                    |_
-var sess_options = {
-  path: './tmp/sessions/',  //directory where session files will be stored
-  useAsync: true,
-  reapInterval: 5000,
-  maxAge: 10000
-};
-
-app.use(session({
-  store: new FileStore(sess_options),
-  secret: 'KarlMarx',
-  resave: true,
-  saveUninitialized: false,
-  cookie: {secure : false}
-}));
-
-app.use(bodyParser.urlencoded({
+app.use(morgan('dev'));             // console logging tool
+app.use(cookieParser());            // read cookies
+app.use(bodyParser.urlencoded({     // Needed to parse request bodies
   extended: true
 }));
+app.use(bodyParser.json());         // get information from html forms
+app.set('view engine', 'ejs');      // set up ejs for templating
 
-app.use(bodyParser.json());
+// public files ==========================
+// js, css, etc served in public folder
+// Note: this is done before session initialize so when these files are
+// accessed a session is not created
+app.use(express.static('./public'));
 
-//TODO this is most definitely insecure will need to change it
-app.use(function(req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  next();
-});
+// session ===============================
+// initializing session and passport with mysql storage
+app.use(session(options.session));
+app.use(passport.initialize());
+app.use(passport.session());        // persistent login sessions
+app.use(flash());   // use connect-flash for flash messages stored in session
 
-//______           _             _       _
-//|  ____|         | |           (_)     | |
-//| |__   _ __   __| |_ __   ___  _ _ __ | |_ ___
-//|  __| | '_ \ / _` | '_ \ / _ \| | '_ \| __/ __|
-//| |____| | | | (_| | |_) | (_) | | | | | |_\__ \
-//|______|_| |_|\__,_| .__/ \___/|_|_| |_|\__|___/
-//                  | |
-//                  |_|
+// routes ================================
+// Note: this is done after session initialization for a reason
+// load our routes
+require('./routes/routes.js')(app, passport);
 
-//Get user by id
-//Arg id specifies id to
-app.get('/api/user/id', function(req, res){
-  var id = req.query.id;
-  userRepo.getById(id).then((data) => {
-    res.json(data);
-  });
-});
-
-//Get all users
-app.get('/api/user/all', function(req, res){
-  console.info(req.session.username);
-  req.session.username = 'test';
-  userRepo.getAll().then((data) => {
-    res.json(data);
-  });
-});
-
-//Insert user into database
-app.post('/api/user/insert', function(req, res){
-  var firstName = req.body.firstName;
-  var lastName = req.body.lastName;
-  var email = req.body.email;
-  var password = req.body.password;
-  userRepo.insertUser(firstName, lastName, email, password).then((data) => {
-    res.json(data);
-  });
-});
-
-app.get('/api/user/session', function(req, res){
-  if(req.session.username){
-    res.send(req.session);
-  }
-  else{
-    res.send('NO ACTIVE SESSION');
-  }
-});
-//Login with user based on email and password
-//Creates a session which stores email and password
-app.post('/api/user/login', function(req, res){
-  var email = req.body.email;
-  var password = req.body.password;
-  userRepo.checkUserExist(email, password).then((userExists) => {
-    if(userExists){
-      req.session.username = email;
-      req.session.password = password;
-      console.info(req.session.username);
-      console.info(email);
-      res.send({
-        status:'SUCCESS',
-      });
-    }
-    else{
-      res.send({
-        status:'FAILURE',
-        info:'USER NOT FOUND'
-      });
-    }
-  });
-});
-
-// Start the server
-app.listen(8000);
-console.info('Server listening on port 8000');
+// launch ======================================================================
+app.listen(port);
+console.log('The magic happens on port ' + port);
