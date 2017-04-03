@@ -34,8 +34,8 @@ module.exports.getAllUserMeals = function(id){
 //Insert a new meal given various meal parameters
 module.exports.insertUserMeal = function(user_id, foodName, sugar, calories, protein, fat, mealType, carb, date){
   return new Promise(function(resolve, reject){
-    var sql = 'INSERT INTO health.meal (food_name, calories, sugar, protein, fat, meal_type, carb, User_user_id) VALUES (?,?,?,?,?,?,?,?)';
-    dbConn.query(sql, [foodName, calories, sugar, protein, fat, mealType, carb, user_id],
+    var sql = 'INSERT INTO health.meal (food_name, calories, sugar, protein, fat, meal_type, carb, User_user_id, timestamp) VALUES (?,?,?,?,?,?,?,?,?)';
+    dbConn.query(sql, [foodName, calories, sugar, protein, fat, mealType, carb, user_id, date],
       function(err){
         if(err){
           console.info(err);

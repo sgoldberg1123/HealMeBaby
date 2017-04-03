@@ -3,7 +3,8 @@ var config = {};
 config.dbConnection = {
   host: '71.95.85.102',
   user: 'test',
-  password: 'health123'
+  password: 'health123',
+  dateStrings: true
 };
 config.session = {
   secret: 'heal me baby',
