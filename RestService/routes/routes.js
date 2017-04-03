@@ -72,10 +72,14 @@ module.exports = function(app, passport) {
       var foodName = req.body.foodName;
       var sugar = req.body.sugar;
       var date = req.body.date;
+      console.info(date);
+      console.info(Object.prototype.toString.call(date));
       var protein = req.body.protein;
       var fat = req.body.fat;
       var mealType = req.body.mealType;
-      userRepo.insertUserMeal(id, foodName, sugar, calories, protein, fat, mealType, date)
+      var carb = req.body.carb
+
+      userRepo.insertUserMeal(id, foodName, sugar, calories, protein, fat, mealType,carb, date)
         .then((data)=>res.json(data));
   });
 
