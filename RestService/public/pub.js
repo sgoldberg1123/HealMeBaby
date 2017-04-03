@@ -38,14 +38,30 @@ var login = function(){
 
 //Get all meals for a given user
 var getAllUserMeals = function(){
-  return new Promise(function(resolve, reject){
-    $.get('/user/meals', function(data, status){
-      if(data.status == 'FAILED'){
-        reject();
+  $.get('/user/meals', function(res, status){
+    if(res.status == 'FAILED'){
+      console.log("Get meals failed");
+    }
+    else{
+      $("#mealTableBody").empty();
+      for(var i = 0; i<res.data.length; i++){
+        $("#mealTableBody").append(
+          /*"<tr>"+
+            "<td>"+*/
+            `
+            <tr>
+              <td>${res.data[i].food_name}</td>
+              <td>${res.data[i].calories}</td>
+              <td>${res.data[i].sugar}</td>
+              <td>${res.data[i].fat}</td>
+              <td>${res.data[i].carb}</td>
+              <td>${res.data[i].protein}</td>
+              <td>${res.data[i].meal_type}</td>
+              <td>${res.data[i].timestamp}</td>
+            </tr>
+            `
+        );
       }
-      else{
-        resolve(data.rows);
-      }
-    });
+    }
   });
 };
