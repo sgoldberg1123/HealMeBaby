@@ -58,7 +58,11 @@ module.exports = function(app, passport) {
   });
 
   app.get('/meals', function(req, res){
+    if(req.isAuthenticated()){
       res.render('meals.ejs');
+    } else{
+      res.redirect('/login');
+    }
   });
 
   app.get('/user/meals/', function(req, res){
@@ -80,7 +84,14 @@ module.exports = function(app, passport) {
       var carb = req.body.carb
 
       userRepo.insertUserMeal(id, foodName, sugar, calories, protein, fat, mealType,carb, date)
-        .then((data)=>res.json(data));
+        .then((data)=>{
+          if(req.isAuthenticated()){
+            res.redirect('/meals');
+          }
+          else {
+            res.json(data);
+          }
+        });
   });
 
   //Get all users (Testing only)

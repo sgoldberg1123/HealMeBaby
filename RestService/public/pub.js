@@ -45,19 +45,26 @@ var getAllUserMeals = function(){
     else{
       $("#mealTableBody").empty();
       for(var i = 0; i<res.data.length; i++){
+        var meal = res.data[i];
+        var foodName = (meal.food_name) ? meal.food_name : "N/a";
+        var timestamp = (meal.timestamp) ? meal.timestamp : "N/a";
+        var calories = (meal.calories) ? meal.calories : "N/a";
+        var sugar = (meal.sugar) ? meal.sugar : "N/a";
+        var fat = (meal.fat) ? meal.fat : "N/a";
+        var carb = (meal.carb) ? meal.carb : "N/a";
+        var protein = (meal.protein) ? meal.protein : "N/a";
+        var mealType = (meal.meal_type) ? meal.meal_type : "N/a";
         $("#mealTableBody").append(
-          /*"<tr>"+
-            "<td>"+*/
             `
             <tr>
-              <td>${res.data[i].food_name}</td>
-              <td>${res.data[i].calories}</td>
-              <td>${res.data[i].sugar}</td>
-              <td>${res.data[i].fat}</td>
-              <td>${res.data[i].carb}</td>
-              <td>${res.data[i].protein}</td>
-              <td>${res.data[i].meal_type}</td>
-              <td>${res.data[i].timestamp}</td>
+              <td>${foodName}</td>
+              <td>${calories}</td>
+              <td>${sugar}</td>
+              <td>${fat}</td>
+              <td>${carb}</td>
+              <td>${protein}</td>
+              <td>${mealType}</td>
+              <td>${timestamp}</td>
             </tr>
             `
         );
