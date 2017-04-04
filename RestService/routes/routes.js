@@ -1,4 +1,5 @@
 var userRepo = require('../dbRepos/userRepo');
+var request = require('request');
 //expose routes to the app
 module.exports = function(app, passport) {
   //Check wether or not request is authenticated and store into variable

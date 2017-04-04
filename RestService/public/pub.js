@@ -36,6 +36,24 @@ var login = function(){
     });
 };
 
+var fastLogin = function(){
+  var email = 'Shortcut@shortcut.com';
+  var password = 'Shortcut';
+  var data = {
+    email: email,
+    password: password
+  };
+  $.post('/login',
+    data,
+    function(data, status){
+      if(data.length > 0){
+        console.log('Found User');
+      }else{
+        console.log('User Not Found');
+      }
+    }
+  );
+};
 //Get all meals for a given user
 var getAllUserMeals = function(){
   $.get('/user/meals', function(res, status){
