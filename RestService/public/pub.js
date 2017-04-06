@@ -54,6 +54,35 @@ var fastLogin = function(){
     }
   );
 };
+
+//Get user profile informtion and populate UI
+var getUserInfo = function(){
+  $.get('/user', function(res, status){
+    if(res.status == 'FAILED'){
+      console.log("Failed to get user info");
+    }
+    else{
+      $("#email").val(res.data.email);
+      $("#firstName").val(res.data.first_name);
+      $("#lastName").val(res.data.last_name);
+    }
+  });
+};
+
+var getRecentUserSnapshot = function(){
+  $.get('/user/healthsnapshot/recent', function(res, status){
+    if(res.status == 'FAILED'){
+      console.log("Get recent health snapshot failed!");
+    }
+    else{
+      $("#weight").val(res.data[0].weight);
+      $("#height").val(res.data[0].height);
+      $("#bloodPressureSys").val(res.data[0].blood_pressure_systolic);
+      $("#bloodPressureDist").val(res.data[0].blood_pressure_distolic);
+      $("#heartRate").val(res.data[0].heart_rate);
+    }
+  });
+}
 //Get all meals for a given user
 var getAllUserMeals = function(){
   $.get('/user/meals', function(res, status){

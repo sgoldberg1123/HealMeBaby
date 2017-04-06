@@ -54,8 +54,22 @@ module.exports = function(app, passport) {
       res.redirect('/');
   });
 
+  app.get('/user', function(req, res) {
+    userRepo.getUserById(req.user.user_id)
+      .then((data) => res.json(data))
+      .catch((data) => res.json(data));
+  });
+
   app.get('/nutrition', function(req, res) {
       res.render('nutritionSearch.ejs');
+  });
+
+  app.get('/profile', function(req, res) {
+    if(req.isAuthenticated()){
+      res.render('profile.ejs');
+    } else{
+      res.redirect('/login');
+    }
   });
 
   app.get('/meals', function(req, res){
@@ -68,7 +82,8 @@ module.exports = function(app, passport) {
 
   app.get('/user/meals/', function(req, res){
       var id = req.user.user_id;
-      userRepo.getAllUserMeals(id).then((data)=>res.json(data));
+      userRepo.getAllUserMeals(id).then((data)=>res.json(data))
+      .catch((data) => {res.json(data);});
   });
 
   app.post('/user/meals/insert', function(req, res){
@@ -77,22 +92,33 @@ module.exports = function(app, passport) {
       var foodName = req.body.foodName;
       var sugar = req.body.sugar;
       var date = req.body.date;
-      console.info(date);
-      console.info(Object.prototype.toString.call(date));
       var protein = req.body.protein;
       var fat = req.body.fat;
       var mealType = req.body.mealType;
       var carb = req.body.carb
 
       userRepo.insertUserMeal(id, foodName, sugar, calories, protein, fat, mealType,carb, date)
-        .then((data)=>{
-          if(req.isAuthenticated()){
-            res.redirect('/meals');
-          }
-          else {
-            res.json(data);
-          }
-        });
+        .then((data)=>{res.redirect('/meals');})
+        .catch((data) => {res.json(data);});
+  });
+
+  app.post('/user/healthsnapshot/insert', function(req, res){
+    var id = req.user.user_id;
+    var weight = req.body.weight;
+    var height = req.body.height;
+    var bloodPressureSys = req.body.bloodPressureSys;
+    var bloodPressureDist = req.body.bloodPressureDist;
+    var heartRate = req.body.heartRate;
+    userRepo.insertUserHealthSnapshot(id, weight, height, bloodPressureSys, bloodPressureDist, heartRate)
+      .then((data) => {res.redirect('/profile');})
+      .catch((data) => {res.redirect('/profile');});
+  });
+
+  app.get('/user/healthsnapshot/recent', function(req, res){
+    var id = req.user.user_id;
+    userRepo.getMostRecentHealthSnapshotInfo(id)
+      .then((data) => {res.json(data)})
+      .catch((data) => {res.json('/profile');});
   });
 
   //Get all users (Testing only)
