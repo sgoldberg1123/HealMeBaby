@@ -1,4 +1,5 @@
 var userRepo = require('../dbRepos/userRepo');
+var mealRepo = require('../dbRepos/mealRepo');
 var request = require('request');
 //expose routes to the app
 module.exports = function(app, passport) {
@@ -8,6 +9,7 @@ module.exports = function(app, passport) {
     next();
   });
 
+  //Load the default landing page
   app.get('/', function(req, res) {
       //change welcome message
       if(!req.isAuthenticated()){
@@ -19,6 +21,7 @@ module.exports = function(app, passport) {
       }
   });
 
+  //Load the login page (or home page if already authenticated)
   app.get('/login', function(req, res) {
       if(req.isAuthenticated()){
         res.redirect('/');
@@ -28,12 +31,14 @@ module.exports = function(app, passport) {
       }
   });
 
+  //Login with a given username and password (passed in post body)
   app.post('/login', passport.authenticate('local-login', {
       successRedirect : '/',
       failureRedirect : '/login',
       failureFlash : true
   }));
 
+  //Load the signup page (or home page if already authenticated)
   app.get('/signup', function(req, res) {
     if(req.isAuthenticated()){
       res.redirect('/');
@@ -43,27 +48,32 @@ module.exports = function(app, passport) {
     }
   });
 
+  //Signup for a new account
   app.post('/signup', passport.authenticate('local-signup', {
       successRedirect : '/',
       failureRedirect : '/signup',
       failureFlash : true
   }));
 
+  //Logout and end the current session
   app.get('/logout', function(req, res) {
       req.logout();
       res.redirect('/');
   });
 
+  //Get the data on the current user
   app.get('/user', function(req, res) {
     userRepo.getUserById(req.user.user_id)
       .then((data) => res.json(data))
       .catch((data) => res.json(data));
   });
 
+  //Load the nutrition page
   app.get('/nutrition', function(req, res) {
       res.render('nutritionSearch.ejs');
   });
 
+  //Load the profile page (or login page if not authenticated)
   app.get('/profile', function(req, res) {
     if(req.isAuthenticated()){
       res.render('profile.ejs');
@@ -71,7 +81,16 @@ module.exports = function(app, passport) {
       res.redirect('/login');
     }
   });
+  //Load the health history page (or login page if not authenticated)
+  app.get('/healthHistory', function(req, res) {
+    if(req.isAuthenticated()){
+      res.render('healthHistory.ejs');
+    } else{
+      res.redirect('/login');
+    }
+  });
 
+  //Load the meals page (or login page if not authenticated)
   app.get('/meals', function(req, res){
     if(req.isAuthenticated()){
       res.render('meals.ejs');
@@ -80,12 +99,14 @@ module.exports = function(app, passport) {
     }
   });
 
-  app.get('/user/meals/', function(req, res){
+  //Get all meals for a user
+  app.get('/user/meal/all', function(req, res){
       var id = req.user.user_id;
       userRepo.getAllUserMeals(id).then((data)=>res.json(data))
       .catch((data) => {res.json(data);});
   });
 
+  //Insert a new meals
   app.post('/user/meals/insert', function(req, res){
       var id = req.user.user_id;
       var calories = req.body.calories;
@@ -102,6 +123,7 @@ module.exports = function(app, passport) {
         .catch((data) => {res.json(data);});
   });
 
+  //Insert a new health snapshot
   app.post('/user/healthsnapshot/insert', function(req, res){
     var id = req.user.user_id;
     var weight = req.body.weight;
@@ -114,12 +136,60 @@ module.exports = function(app, passport) {
       .catch((data) => {res.redirect('/profile');});
   });
 
+  //Get the most recent health snapshot for a user
   app.get('/user/healthsnapshot/recent', function(req, res){
     var id = req.user.user_id;
     userRepo.getMostRecentHealthSnapshotInfo(id)
       .then((data) => {res.json(data)})
-      .catch((data) => {res.json('/profile');});
+      .catch((data) => {res.json(data)});
   });
+
+  //Get all health snapshots for a user
+  app.get('/user/healthsnapshot/all', function(req, res){
+    var id = req.user.user_id;
+    userRepo.getUserHealthSnapshots(id)
+      .then((data) => {res.json(data)})
+      .catch((data) => {res.json(data)});
+  });
+
+  //Delete a meal by id
+  app.post('/meal/delete', function(req, res){
+    if(req.isAuthenticated()){
+      var meal_id = req.body.meal_id;
+      mealRepo.deleteMealById(meal_id)
+        .then((data) => res.redirect('/meals'))
+        .catch((data) => res.redirect('/meals'));
+    }
+  });
+
+  //Get a single meal by id
+  app.get('/meal', function(req, res){
+    if(req.isAuthenticated()){
+      var meal_id = req.query.meal_id;
+      mealRepo.getMealById(meal_id)
+        .then((data) => res.json(data))
+        .catch((data) => res.json(data));
+    }
+  });
+
+  //Update a single meal by id
+  app.post('/meal/update', function(req, res){
+    if(req.isAuthenticated()){
+      var meal_id = req.query.meal_id;
+      var calories = req.body.calories;
+      var foodName = req.body.foodName;
+      var sugar = req.body.sugar;
+      var date = req.body.date;
+      var protein = req.body.protein;
+      var fat = req.body.fat;
+      var mealType = req.body.mealType;
+      var carb = req.body.carb;
+      mealRepo.updateMealById(meal_id, foodName, calories, sugar, protein, fat, mealType, carb, date)
+        .then((data) => res.redirect('/meals'))
+        .catch((data) => res.redirect('/meals'));
+    }
+  });
+
 
   //Get all users (Testing only)
   /*app.get('/user/all', function(req,res){

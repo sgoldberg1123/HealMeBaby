@@ -1,0 +1,25 @@
+<%- include('header') %>
+<script>
+  $(document).ready(function(){
+    getAllUserHealthSnapshots();
+  });
+</script>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Weight (Lbs)</th>
+      <th>Height (Inches)</th>
+      <th>Blood Pressure Systolic</th>
+      <th>Blood Pressure Distolic</th>
+      <th>Heart Rate</th>
+    </tr>
+  </thead>
+  <tbody id="healthHistoryTableBody">
+    <tr>
+      <td>
+        Loading
+      </td>
+    </tr>
+  </tbody>
+</table>
+<%- include('footer') %>

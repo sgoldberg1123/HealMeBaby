@@ -82,10 +82,49 @@ var getRecentUserSnapshot = function(){
       $("#heartRate").val(res.data[0].heart_rate);
     }
   });
-}
-//Get all meals for a given user
+};
+
+//Delete a meal based on id then reload the meals table
+var deleteMeal = function(meal_id){
+  $.post('/user/meal/delete',
+  {
+    meal_id: meal_id
+  },
+  function(res, status){
+    getAllUserMeals();
+  });
+};
+
+var editMeal = function(meal_id){
+  $.get('/meal',
+  {
+    meal_id: meal_id
+  },
+  function(res, status){
+    var meal = res.data[0];
+    var foodName = (meal.food_name) ? meal.food_name : "";
+    var timestamp = (meal.timestamp) ? meal.timestamp : "";
+    var calories = (meal.calories) ? meal.calories : 0;
+    var sugar = (meal.sugar) ? meal.sugar : 0;
+    var fat = (meal.fat) ? meal.fat : 0;
+    var carb = (meal.carb) ? meal.carb : 0;
+    var protein = (meal.protein) ? meal.protein : 0;
+    var mealType = (meal.meal_type) ? meal.meal_type : "Snack";
+    $("#editFoodName").val(foodName);
+    $("#editCalories").val(calories);
+    $("#editSugar").val(sugar);
+    $("#editProtein").val(protein);
+    $("#editFat").val(fat);
+    $("#editMealType").val(mealType);
+    $("#editCarb").val(carb);
+    $("#editDate").val(timestamp);
+    $("#editMealModal").modal('show');
+  });
+};
+
+//Get all meals for a given user and populate the meals table with them
 var getAllUserMeals = function(){
-  $.get('/user/meals', function(res, status){
+  $.get('/user/meal/all', function(res, status){
     if(res.status == 'FAILED'){
       console.log("Get meals failed");
     }
@@ -112,6 +151,40 @@ var getAllUserMeals = function(){
               <td>${protein}</td>
               <td>${mealType}</td>
               <td>${timestamp}</td>
+              <td><button class="btn btn-warning btn-sm" data-toggle="tooltip" title="Edit This Meal" onclick="editMeal(${meal.meal_id})"><span class="glyphicon glyphicon-pencil"></span></button></td>
+              <td><button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete This Meal" onclick="deleteMeal(${meal.meal_id})"><span class="glyphicon glyphicon-remove"></span></button></td>
+            </tr>
+            `
+        );
+      }
+    }
+  });
+};
+
+//Get all health snapshots for a user and populate the health history table with them
+var getAllUserHealthSnapshots = function(){
+  $.get('/user/healthsnapshot/all', function(res, status){
+    if(res.status == 'FAILED'){
+      console.log("Get healthsnapshots failed");
+    }
+    else{
+      $("#healthHistoryTableBody").empty();
+      for(var i = 0; i<res.data.length; i++){
+        var snapshot = res.data[i];
+        var height = (snapshot.height) ? snapshot.height : "N/a";
+        var weight = (snapshot.weight) ? snapshot.weight : "N/a";
+        var bloodPressureSys = (snapshot.blood_pressure_systolic) ? snapshot.blood_pressure_systolic : "N/a";
+        var bloodPressureDist = (snapshot.blood_pressure_distolic) ? snapshot.blood_pressure_distolic : "N/a";
+        var heartRate = (snapshot.heart_rate) ? snapshot.heart_rate : "N/a";
+
+        $("#healthHistoryTableBody").append(
+            `
+            <tr>
+              <td>${weight}</td>
+              <td>${height}</td>
+              <td>${bloodPressureSys}</td>
+              <td>${bloodPressureDist}</td>
+              <td>${heartRate}</td>
             </tr>
             `
         );

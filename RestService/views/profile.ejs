@@ -6,7 +6,12 @@
   });
 </script>
 <div class="panel panel-primary" style="width:45%; float:left;">
-  <div class="panel-heading">Health Stats</div>
+  <div class="panel-heading">
+    Health Stats
+    <div style="float: right;">
+      <a class="btn btn-default btn-sm" href="/healthHistory" style="margin-top: -5px;">History<span class="glyphicon glyphicon-hourglass"></span></a>
+    </div>
+  </div>
   <div class="panel-body">
     <form action="/user/healthsnapshot/insert" method="post">
       <div class="form-group">
