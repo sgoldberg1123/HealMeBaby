@@ -66,6 +66,14 @@ module.exports = function(app, passport) {
     }
   });
 
+  app.get('/chart', function(req, res){
+    if(req.isAuthenticated()){
+      res.render('chart.ejs');
+    } else{
+      res.redirect('/login');
+    }
+  });
+
   app.get('/user/meals/', function(req, res){
       var id = req.user.user_id;
       userRepo.getAllUserMeals(id).then((data)=>res.json(data));
