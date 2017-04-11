@@ -184,7 +184,7 @@ module.exports = function(app, passport) {
   //Update a single meal by id
   app.post('/meal/update', function(req, res){
     if(req.isAuthenticated()){
-      var meal_id = req.query.meal_id;
+      var meal_id = req.body.meal_id;
       var calories = req.body.calories;
       var foodName = req.body.foodName;
       var sugar = req.body.sugar;
