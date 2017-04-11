@@ -4,7 +4,7 @@
   "description": "A health app that is supported on web and android",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon app.js"
+    "start": "nodemon app.js"
   },
   "author": "Tyler Palmer",
   "license": "MIT",
