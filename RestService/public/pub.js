@@ -86,7 +86,7 @@ var getRecentUserSnapshot = function(){
 
 //Delete a meal based on id then reload the meals table
 var deleteMeal = function(meal_id){
-  $.post('/user/meal/delete',
+  $.post('/meal/delete',
   {
     meal_id: meal_id
   },
@@ -102,6 +102,7 @@ var editMeal = function(meal_id){
   },
   function(res, status){
     var meal = res.data[0];
+    var id = (meal.meal_id);
     var foodName = (meal.food_name) ? meal.food_name : "";
     var timestamp = (meal.timestamp) ? meal.timestamp : "";
     var calories = (meal.calories) ? meal.calories : 0;
@@ -118,6 +119,7 @@ var editMeal = function(meal_id){
     $("#editMealType").val(mealType);
     $("#editCarb").val(carb);
     $("#editDate").val(timestamp);
+    $("#editMealId").val(id);
     $("#editMealModal").modal('show');
   });
 };

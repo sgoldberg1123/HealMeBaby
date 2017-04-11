@@ -27,7 +27,7 @@ module.exports.updateMealById = function(id, foodName, calories, sugar, protein,
     'fat = ?, ' +
     'meal_type = ?, ' +
     'carb = ?, ' +
-    'timestamp = ? '
+    'timestamp = ? ' +
     'WHERE meal_id = ?';
     dbConn.query(sql, [foodName, calories, sugar, protein, fat, mealType, carb, date, id], function(err, rows){
       if(err){
