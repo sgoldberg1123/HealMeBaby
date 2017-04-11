@@ -1,0 +1,63 @@
+<%- include('header') %>
+<script>
+  $(document).ready(function(){
+    getUserInfo();
+    getRecentUserSnapshot();
+  });
+</script>
+<div class="panel panel-primary" style="width:45%; float:left;">
+  <div class="panel-heading">
+    Health Stats
+    <div style="float: right;">
+      <a class="btn btn-default btn-sm" href="/healthHistory" style="margin-top: -5px;">History<span class="glyphicon glyphicon-hourglass"></span></a>
+    </div>
+  </div>
+  <div class="panel-body">
+    <form action="/user/healthsnapshot/insert" method="post">
+      <div class="form-group">
+          <label>Weight (Lbs)</label>
+          <input type="number" name="weight" class="form-control" placeholder="Weight" id="weight" />
+      </div><!-- form-group -->
+      <div class="form-group">
+          <label>Height (Inches)</label>
+          <input type="number" name="height" class="form-control" placeholder="Height" id="height" />
+      </div><!-- form-group -->
+      <div class="form-group">
+          <label>Blood Pressure Systolic</label>
+          <input type="number" name="bloodPressureSys" class="form-control" placeholder="Blood Pressure Systolic" id="bloodPressureSys" />
+      </div><!-- form-group -->
+      <div class="form-group">
+          <label>Blood Pressure Distolic</label>
+          <input type="number" name="bloodPressureDist" class="form-control" placeholder="Blood Pressure Distolic" id="bloodPressureDist" />
+      </div><!-- form-group -->
+      <div class="form-group">
+          <label>Resting Heart Rate</label>
+          <input type="number" name="heartRate" class="form-control" placeholder="Heart Rate" id="heartRate" />
+      </div><!-- form-group -->
+      <button type="submit" class="btn btn-primary">Save</button>
+      <button type="button" onclick="getRecentUserSnapshot()" class="btn btn-default">Reset</button>
+    </form>
+  </div>
+</div>
+<div class="panel panel-primary" style="width:45%; float:right;">
+  <div class="panel-heading">Profile Info</div>
+  <div class="panel-body">
+    <form action="/user/update" method="post">
+      <div class="form-group">
+          <label>E-mail</label>
+          <input type="email" name="email" class="form-control" placeholder="E-mail" id="email" />
+      </div><!-- form-group -->
+      <div class="form-group">
+          <label>First Name</label>
+          <input type="text" name="firstName" class="form-control" placeholder="First Name" id="firstName" />
+      </div><!-- form-group -->
+      <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" name="lastName" class="form-control" placeholder="Last Name" id="lastName" />
+      </div><!-- form-group -->
+      <button type="submit" class="btn btn-primary">Save</button>
+      <button type="button" onclick="getUserInfo()" class="btn btn-default">Reset</button>
+    </form>
+  </div>
+</div>
+<%- include('footer') %>

@@ -4,7 +4,7 @@
     getAllUserMeals();
   });
 </script>
-<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#addMealModal">Add Meal</button>
+<button type="button" class="btn btn-info" data-toggle="modal" data-target="#addMealModal">Add Meal</button>
 <table class="table">
   <thead>
     <tr>
@@ -16,6 +16,8 @@
       <th>Protein</th>
       <th>Meal Type</th>
       <th>Date</th>
+      <th>Edit</th>
+      <th>Delete</th>
     </tr>
   </thead>
   <tbody id="mealTableBody">
@@ -26,7 +28,7 @@
     </tr>
   </tbody>
 </table>
-<!-- Modal -->
+<!--Add Meal Modal -->
 <div id="addMealModal" class="modal fade" role="dialog">
   <div class="modal-dialog">
     <!-- Modal content-->
@@ -80,6 +82,68 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-primary">Add Meal</button>
+      </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="editMealModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <form action="/meal/update" method="post">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Meal</h4>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="meal_id" id="editMealId">
+        <div class="form-group">
+            <label>Food Name</label>
+            <input type="text" name="foodName" class="form-control" placeholder="Food Name" id="editFoodName" />
+        </div><!-- form-group -->
+        <div class="form-group">
+            <label>Calories</label>
+            <input type="number" name="calories" class="form-control" placeholder="Calories" id="editCalories" />
+        </div><!-- form-group -->
+        <div class="form-group">
+            <label>Sugar</label>
+            <input type="number" name="sugar" class="form-control" placeholder="Sugar" id="editSugar" />
+        </div><!-- form-group -->
+        <div class="form-group">
+            <label>Protein</label>
+            <input type="number" name="protein" class="form-control" placeholder="Protein" id="editProtein" />
+        </div><!-- form-group -->
+        <div class="form-group">
+            <label>Fat</label>
+            <input type="number" name="fat" class="form-control" placeholder="Fat" id="editFat" />
+        </div><!-- form-group -->
+        <div class="form-group">
+          <!--<label>Meal Type</label>
+          <input type="text" name="mealType" class="form-control" placeholder="Meal Type" id="mealType" />-->
+          <label for="mealType">Meal Type</label>
+          <select class="form-control" name="mealType" id="editMealType">
+            <option>Breakfast</option>
+            <option>Lunch</option>
+            <option>Dinner</option>
+            <option>Snack</option>
+          </select>
+        </div><!-- form-group -->
+        <div class="form-group">
+            <label>Carbs</label>
+            <input type="number" name="carb" class="form-control" id="editCarb" />
+        </div><!-- form-group -->
+        <div class="form-group">
+            <label>Date</label>
+            <input type="date" name="date" class="form-control" id="editDate" />
+        </div><!-- form-group -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Update</button>
       </div>
       </form>
     </div>
