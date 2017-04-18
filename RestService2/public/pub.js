@@ -452,3 +452,50 @@ var deleteSnapshot = function(snapshot_id){
     });
   }
 };
+
+//edit a snapshot - retrieve info
+var editSnapshot = function(snapshot_id){
+  $.post('/api/snapshot',
+  {
+    snapshot_id: snapshot_id,
+    JWT: sessionStorage.token
+  },
+  function(res, status){
+    var snapshot = res.data[0];
+    var id = snapshot.health_snapshot_id
+    var height = (snapshot.height) ? snapshot.height : "N/a";
+    var weight = (snapshot.weight) ? snapshot.weight : "N/a";
+    var bloodPressureSys = (snapshot.blood_pressure_systolic) ? snapshot.blood_pressure_systolic : "N/a";
+    var bloodPressureDist = (snapshot.blood_pressure_distolic) ? snapshot.blood_pressure_distolic : "N/a";
+    var heartRate = (snapshot.heart_rate) ? snapshot.heart_rate : "N/a";
+    $("#editSnapshotHeight").val(height);
+    $("#editSnapshotWeight").val(weight);
+    $("#editSnapshotBloodPressureSys").val(bloodPressureSys);
+    $("#editSnapshotBloodPressureDist").val(bloodPressureDist);
+    $("#editSnapshotHeartRate").val(heartRate);
+    $("#editSnapshotId").val(id);
+    $("#editSnapshotModal").modal('show');
+  });
+};
+
+//edit a meal - submit new data
+var editSnapshotSubmit = function(){
+  var data = {
+    JWT: sessionStorage.token,
+    snapshot_id: $('#editSnapshotId')[0].value,
+    height: $('#editSnapshotHeight')[0].value,
+    weight: $('#editSnapshotWeight')[0].value,
+    blood_pressure_systolic: $('#editSnapshotBloodPressureSys')[0].value,
+    blood_pressure_distolic: $('#editSnapshotBloodPressureDist')[0].value,
+    heart_rate: $('#editSnapshotHeartRate')[0].value,
+  };
+  $.post('/api/snapshot/update', data, function(res, status){
+    if(res.status == 'FAILED'){
+      console.log("Update snapshot failed");
+    }
+    else{
+      $('#editSnapshotModal').modal('hide');
+      getAllUserHealthSnapshots();
+    }
+  });
+};

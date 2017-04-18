@@ -24,4 +24,45 @@
     </tr>
   </tbody>
 </table>
+
+<!-- Edit health history Modal -->
+<div id="editSnapshotModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <form onsubmit='return false;'>
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Snapshot</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+            <label>Height</label>
+            <input type="text" name="height" class="form-control" placeholder="Height" id="editSnapshotHeight" />
+        </div><!-- form-group -->
+        <div class="form-group">
+            <label>Weight</label>
+            <input type="number" name="weight" class="form-control" placeholder="Weight" id="editSnapshotWeight" />
+        </div><!-- form-group -->
+        <div class="form-group">
+            <label>Blood Pressure Systolic</label>
+            <input type="number" name="blood_pressure_systolic" class="form-control" placeholder="Blood Pressure Systolic" id="editSnapshotBloodPressureSys" />
+        </div><!-- form-group -->
+        <div class="form-group">
+            <label>Blood Pressure Distolic</label>
+            <input type="number" name="blood_pressure_distolic" class="form-control" placeholder="Blood Pressure Distolic" id="editSnapshotBloodPressureDist" />
+        </div><!-- form-group -->
+        <div class="form-group">
+            <label>Heart Rate</label>
+            <input type="number" name="heart_rate" class="form-control" placeholder="Heart Rate" id="editSnapshotHeartRate" />
+        </div><!-- form-group -->
+      <div class="modal-footer">
+        <input type="hidden" id="editSnapshotId" name="health_snapshot_id">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" onclick='editSnapshotSubmit();' class="btn btn-primary">Update</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
 <%- include('components/footer') %>

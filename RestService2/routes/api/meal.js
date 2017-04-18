@@ -67,6 +67,7 @@ meal.post('/', function(req, res, next){
   })(req, res, next);
 });
 
+//Update a single meal by id
 meal.post('/update', function(req, res, next){
   passport.authenticate('jwt', config.jwtConfig.jwtSession, function(err, user, info){
     if(err){ return next(err); }
