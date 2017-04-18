@@ -18,8 +18,8 @@ snapshot.post('/insert', function(req, res, next){
       var bloodPressureDist = req.body.bloodPressureDist;
       var heartRate = req.body.heartRate;
       snapshotRepo.insertUserHealthSnapshot(id, weight, height, bloodPressureSys, bloodPressureDist, heartRate)
-        .then((data) => {res.redirect('/profile');})
-        .catch((data) => {res.redirect('/profile');});
+        .then((data) => {res.json(data);})
+        .catch((data) => {res.json(data);});
     }
   })(req, res, next);
 });
