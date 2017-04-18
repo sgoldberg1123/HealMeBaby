@@ -3,7 +3,7 @@ var dbConn = require('../config/dbConn');
 //get all health snapshots for a user
 module.exports.getUserHealthSnapshots = function(id) {
   return new Promise(function(resolve, reject){
-    var sql = 'SELECT weight, height, blood_pressure_systolic, blood_pressure_distolic, heart_rate '+
+    var sql = 'SELECT health_snapshot_id, weight, height, blood_pressure_systolic, blood_pressure_distolic, heart_rate '+
     'FROM health.healthsnapshot ' +
     'WHERE user_id = ?';
     console.info(id);
@@ -50,5 +50,41 @@ module.exports.insertUserHealthSnapshot = function(user_id, weight, height, bloo
         }
       }
     );
+  });
+};
+
+//Delete a single health snapshot by id
+module.exports.deleteSnapshotById = function(id){
+  return new Promise(function(resolve, reject){
+    var sql = 'DELETE '+
+    'FROM health.healthsnapshot ' +
+    'WHERE health.healthsnapshot.health_snapshot_id = ? ';
+    dbConn.query(sql, [id], function(err, rows){
+      if(err){
+        console.info(err);
+        reject({status: 'FAILED', info: 'UNKNOWN ERROR'});
+      }
+      resolve({status: 'SUCCESS'});
+    });
+  });
+};
+
+//Update a single snapshot by id
+module.exports.updateSnapshotById = function(id, weight, height, bloodPressureSys, bloodPressureDist, heartRate){
+  return new Promise(function(resolve, reject){
+    var sql = 'UPDATE health.meal '+
+    'SET weight = ?, ' +
+    'height = ?, ' +
+    'blood_pressure_systolic = ?, ' +
+    'blood_pressure_distolic = ?, ' +
+    'heart_rate = ? ' +
+    'WHERE health_snapshot_id = ?';
+    dbConn.query(sql, [weight, height, bloodPressureSys, bloodPressureDist, heartRate, id], function(err, rows){
+      if(err){
+        console.info(err);
+        reject({status: 'FAILED', info: 'UNKNOWN ERROR'});
+      }
+      resolve({status: 'SUCCESS'});
+    });
   });
 };

@@ -262,6 +262,7 @@ var getAllUserHealthSnapshots = function(){
       $("#healthHistoryTableBody").empty();
       for(var i = 0; i<res.data.length; i++){
         var snapshot = res.data[i];
+        var id = snapshot.health_snapshot_id
         var height = (snapshot.height) ? snapshot.height : "N/a";
         var weight = (snapshot.weight) ? snapshot.weight : "N/a";
         var bloodPressureSys = (snapshot.blood_pressure_systolic) ? snapshot.blood_pressure_systolic : "N/a";
@@ -276,6 +277,8 @@ var getAllUserHealthSnapshots = function(){
               <td>${bloodPressureSys}</td>
               <td>${bloodPressureDist}</td>
               <td>${heartRate}</td>
+              <td><button class="btn btn-warning btn-sm" data-toggle="tooltip" title="Edit This Health Snapshot" onclick="editSnapshot(${id})"><span class="glyphicon glyphicon-pencil"></span></button></td>
+              <td><button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete This Health Snapshot" onclick="deleteSnapshot(${id})"><span class="glyphicon glyphicon-remove"></span></button></td>
             </tr>
             `
         );
@@ -422,6 +425,28 @@ var deleteMeal = function(meal_id){
       else{
         if(r){
           getAllUserMeals();
+        }
+      }
+    });
+  }
+};
+
+//Delete a health snapshot by id
+var deleteSnapshot = function(snapshot_id){
+  var r = confirm("Are you sure you want to delete this health snapshot");
+  if(r){
+    $.post('/api/snapshot/delete',
+    {
+      snapshot_id: snapshot_id,
+      JWT: sessionStorage.token
+    },
+    function(res, status){
+      if(res.status == 'FAILED'){
+        console.log('Snapshot deletion failed');
+      }
+      else{
+        if(r){
+          getAllUserHealthSnapshots();
         }
       }
     });

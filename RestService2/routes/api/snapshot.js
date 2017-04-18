@@ -24,6 +24,19 @@ snapshot.post('/insert', function(req, res, next){
   })(req, res, next);
 });
 
+snapshot.post('/delete', function(req, res, next){
+  passport.authenticate('jwt', config.jwtConfig.jwtSession, function(err, user, info){
+    if(err) { return next(err); }
+    else if(!user){return res.json({error: 'Please login'});}
+    else{
+      var id = req.body.snapshot_id;
+      snapshotRepo.deleteSnapshotById(id)
+        .then((data) => {res.json(data)})
+        .catch((data) => {res.json(data)});
+    }
+  })(req, res, next);
+});
+
 snapshot.post('/recent', function(req, res, next){
   passport.authenticate('jwt', config.jwtConfig.jwtSession, function(err, user, info){
     if(err){ return next(err); }
