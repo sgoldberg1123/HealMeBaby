@@ -6,7 +6,7 @@ module.exports.getAllUsers = function() {
       dbConn.query('SELECT * FROM health.user',function(err,rows){
         if(err){
           console.info(err);
-          reject({status: 'FAILED', info: 'UNKNOWN ERROR'});
+          reject({status: 'FAILED', error: 'UNKNOWN ERROR'});
         }
         resolve({data: rows,status: 'SUCCESS'});
       });
@@ -22,7 +22,9 @@ module.exports.getUserById = function(id){
     dbConn.query(sql, [id], function(err,rows){
       if(err){
         console.info(err);
-        reject({status: 'FAILED',info: 'UNKNOWN ERROR'});
+        reject({status: 'FAILED', error: 'UNKNOWN ERROR'});
+      } else if(!rows.length){
+        reject({status: 'FAILED', error: 'cant find user'});
       }
       resolve({data: rows[0], status: 'SUCCESS'});
     });
@@ -35,9 +37,9 @@ module.exports.createUser = function(email, password, first_name, last_name){
     dbConn.query('SELECT * from health.user where email = ?',[email],function(err,rows){
       if(err){
         console.info(err);
-        reject({status: 'FAILED', info: 'UNKNOWN ERROR'});
+        reject({status: 'FAILED', error: 'UNKNOWN ERROR'});
       } else if(rows.length){
-        reject({status: 'FAILED', info: 'Email taken'});
+        reject({status: 'FAILED', error: 'Email taken'});
       } else{
         // if there is no user with that email create one
         var returnData = new Object();
@@ -45,9 +47,9 @@ module.exports.createUser = function(email, password, first_name, last_name){
         dbConn.query(insertQuery,[email, password, first_name, last_name],function(err,rows){
           if(err){
             console.info(err);
-            reject({status: 'FAILED', info: 'UNKNOWN ERROR'});
+            reject({status: 'FAILED', error: 'UNKNOWN ERROR'});
           } else if(!rows.insertId){
-            reject({status: 'FAILED', info: 'UNKNOWN ERROR'});
+            reject({status: 'FAILED', error: 'UNKNOWN ERROR'});
           } else{
             returnData.id = rows.insertId;
             returnData.name = first_name;
@@ -68,11 +70,11 @@ module.exports.userVerify = function(email, password){
     dbConn.query(sql, [email], function(err,rows){
       if(err){
         console.info(err);
-        reject({status: 'FAILED',info: 'UNKNOWN ERROR'});
+        reject({status: 'FAILED', error: 'UNKNOWN ERROR'});
       }else if(!rows.length){
-        reject({status: 'FAILED',info: 'UNKNOWN ERROR'});
+        reject({status: 'FAILED', error: 'UNKNOWN ERROR'});
       }else if(rows[0].password != password ){
-        reject({status: 'FAILED',info: 'UNKNOWN ERROR'});
+        reject({status: 'FAILED', error: 'UNKNOWN ERROR'});
       }else {
         var returnData = {
           id: rows[0].user_id,
@@ -94,9 +96,9 @@ module.exports.updateUserInfo = function(id, email, firstName, lastName){
     dbConn.query(sql, [email, firstName, lastName, id], function(err, rows, fields){
       if(err){
         console.info(err);
-        reject({status: 'FAILED',info: 'err'});
+        reject({status: 'FAILED', error: 'err'});
       }else if(!rows.changedRows){
-        reject({status: 'FAILED',info: 'UNKNOWN ERROR'});
+        reject({status: 'FAILED', error: 'no change needed'});
       }else {
 
         resolve({status: 'SUCCESS'});

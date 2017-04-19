@@ -9,7 +9,9 @@ module.exports.deleteMealById = function(id){
     dbConn.query(sql, [id], function(err, rows){
       if(err){
         console.info(err);
-        reject({status: 'FAILED', info: 'UNKNOWN ERROR'});
+        reject({status: 'FAILED', error: 'UNKNOWN ERROR'});
+      } else if(!rows.affectedRows){
+        reject({status: 'FAILED', error: 'couldnt delete'});
       }
       resolve({status: 'SUCCESS'});
     });
@@ -32,7 +34,9 @@ module.exports.updateMealById = function(id, foodName, calories, sugar, protein,
     dbConn.query(sql, [foodName, calories, sugar, protein, fat, mealType, carb, date, id], function(err, rows){
       if(err){
         console.info(err);
-        reject({status: 'FAILED', info: 'UNKNOWN ERROR'});
+        reject({status: 'FAILED', error: 'UNKNOWN ERROR'});
+      } else if(!rows.changedRows){
+        reject({status: 'FAILED', error: 'cant find meal or no change'});
       }
       resolve({status: 'SUCCESS'});
     });
@@ -48,9 +52,11 @@ module.exports.getMealById = function(id){
     dbConn.query(sql, [id], function(err, rows){
       if(err){
         console.info(err);
-        reject({status: 'FAILED', info: 'UNKNOWN ERROR'});
+        reject({status: 'FAILED', error: 'UNKNOWN ERROR'});
+      }else if(!rows.length){
+        reject({status: 'FAILED', error: 'cant find meal'});
       }
-      resolve({data: rows, status: 'SUCCESS'});
+      resolve({data: rows[0], status: 'SUCCESS'});
     });
   });
 };
@@ -64,7 +70,7 @@ module.exports.getAllUserMeals = function(id){
     dbConn.query(sql, [id], function(err,rows){
       if(err){
         console.info(err);
-        reject({status: 'FAILED',info: 'UNKNOWN ERROR'});
+        reject({status: 'FAILED', error: 'UNKNOWN ERROR'});
       }
       resolve({data: rows, status: 'SUCCESS'});
     });
@@ -79,7 +85,7 @@ module.exports.insertUserMeal = function(user_id, foodName, sugar, calories, pro
       function(err){
         if(err){
           console.info(err);
-          reject({status:'FAILED',info: 'UNKNOWN ERROR'});
+          reject({status:'FAILED', error: 'UNKNOWN ERROR'});
         }
         else{
           resolve({status:'SUCCESS'});

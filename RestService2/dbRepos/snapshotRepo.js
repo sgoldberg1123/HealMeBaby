@@ -10,7 +10,7 @@ module.exports.getUserHealthSnapshots = function(id) {
     dbConn.query(sql, [id], function(err, rows){
       if(err){
         console.info(err);
-        reject({status: 'FAILED', info: 'UNKNOWN ERROR'});
+        reject({status: 'FAILED', error: 'UNKNOWN ERROR'});
       }
       resolve({data: rows, status: 'SUCCESS'});
     });
@@ -28,9 +28,9 @@ module.exports.getMostRecentHealthSnapshotInfo = function(id) {
     dbConn.query(sql, [id], function(err, rows){
       if(err){
         console.info(err);
-        reject({status: 'FAILED', info: 'UNKNOWN ERROR'});
-      }
-      resolve({data: rows, status: 'SUCCESS'});
+        reject({status: 'FAILED', error: 'UNKNOWN ERROR'});
+      } 
+      resolve({data: rows[0], status: 'SUCCESS'});
     });
   });
 };
@@ -43,7 +43,7 @@ module.exports.insertUserHealthSnapshot = function(user_id, weight, height, bloo
       function(err){
         if(err){
           console.info(err);
-          reject({status:'FAILED', info: 'UNKNOWN ERROR'})
+          reject({status:'FAILED', error: 'UNKNOWN ERROR'})
         }
         else{
           resolve({status:'SUCCESS'});
@@ -62,9 +62,11 @@ module.exports.getSnapshotById = function(id){
     dbConn.query(sql, [id], function(err, rows){
       if(err){
         console.info(err);
-        reject({status: 'FAILED', info: 'UNKNOWN ERROR'});
+        reject({status: 'FAILED', error: 'UNKNOWN ERROR'});
+      }else if(!rows.length){
+        reject({status: 'FAILED', error: 'cant find snapshot'});
       }
-      resolve({data: rows, status: 'SUCCESS'});
+      resolve({data: rows[0], status: 'SUCCESS'});
     });
   });
 };
@@ -78,7 +80,9 @@ module.exports.deleteSnapshotById = function(id){
     dbConn.query(sql, [id], function(err, rows){
       if(err){
         console.info(err);
-        reject({status: 'FAILED', info: 'UNKNOWN ERROR'});
+        reject({status: 'FAILED', error: 'UNKNOWN ERROR'});
+      }else if(!rows.affectedRows){
+        reject({status: 'FAILED', error: 'not able to delete'});
       }
       resolve({status: 'SUCCESS'});
     });
@@ -98,7 +102,9 @@ module.exports.updateSnapshotById = function(id, weight, height, bloodPressureSy
     dbConn.query(sql, [weight, height, bloodPressureSys, bloodPressureDist, heartRate, id], function(err, rows){
       if(err){
         console.info(err);
-        reject({status: 'FAILED', info: 'UNKNOWN ERROR'});
+        reject({status: 'FAILED', error: 'UNKNOWN ERROR'});
+      }else if(!rows.changedRows){
+        reject({status: 'FAILED', error: 'no change: either input was the same or there wasnt a snapshot'});
       }
       resolve({status: 'SUCCESS'});
     });

@@ -215,11 +215,11 @@ var getRecentUserSnapshot = function(){
     } else if (res.error){
       console.log("Didn't find user snapshot")
     } else{
-      $("#weight").val(res.data[0].weight);
-      $("#height").val(res.data[0].height);
-      $("#bloodPressureSys").val(res.data[0].blood_pressure_systolic);
-      $("#bloodPressureDist").val(res.data[0].blood_pressure_distolic);
-      $("#heartRate").val(res.data[0].heart_rate);
+      $("#weight").val(res.data.weight);
+      $("#height").val(res.data.height);
+      $("#bloodPressureSys").val(res.data.blood_pressure_systolic);
+      $("#bloodPressureDist").val(res.data.blood_pressure_distolic);
+      $("#heartRate").val(res.data.heart_rate);
     }
   });
 };
@@ -337,7 +337,7 @@ var editMeal = function(meal_id){
     JWT: sessionStorage.token
   },
   function(res, status){
-    var meal = res.data[0];
+    var meal = res.data;
     var id = (meal.meal_id);
     var foodName = (meal.food_name) ? meal.food_name : "";
     var timestamp = (meal.timestamp) ? meal.timestamp : "";
@@ -461,7 +461,7 @@ var editSnapshot = function(snapshot_id){
     JWT: sessionStorage.token
   },
   function(res, status){
-    var snapshot = res.data[0];
+    var snapshot = res.data;
     var id = snapshot.health_snapshot_id
     var height = (snapshot.height) ? snapshot.height : "N/a";
     var weight = (snapshot.weight) ? snapshot.weight : "N/a";
