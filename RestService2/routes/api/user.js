@@ -18,17 +18,17 @@ user.post('/signup', function(req, res){
       res.json({
         token: token,
         firstName: data.returnData.name,
-        status: true
+        status: 'SUCCESS'
       });
     }).catch((data) => {
       res.json({
         error: 'Email already in use',
-        status: false
+        status: 'FAILED'
       });
     });
   } else{
     res.json({
-      status: false,
+      status: 'FAILED',
       error: 'Fill out all fields'
     });
   }
@@ -44,18 +44,18 @@ user.post('/login', function(req, res){
       res.json({
         token: token,
         firstName: data.returnData.name,
-        status: true
+        status: 'SUCCESS'
       });
     })
     .catch((data) => {
       res.json({
-        status: false,
+        status: 'FAILED',
         error: 'Invalid Email or Password'
       });
     });
   } else {
     res.json({
-      status: false,
+      status: 'FAILED',
       error: 'Fill out all fields'
     });
   }
