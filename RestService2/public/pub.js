@@ -427,3 +427,83 @@ var deleteMeal = function(meal_id){
     });
   }
 };
+
+var getMealsForCharting = function(){
+    var data = {
+      JWT: sessionStorage.token
+    };
+  $.post('/api/meal/all', data, function(res, status){
+    if(res.status == 'FAILED'){
+      console.info("Get meals failed");
+    }
+    else{
+        TESTER = document.getElementById('tester');
+        var x_date = [];
+        var y_cal = [];
+        var y_sugar = [];
+        var y_fat = [];
+        var y_carb = [];
+        var y_protein = [];
+
+        for(var i = 0; i<res.data.length; i++){
+            var meal = res.data[i];
+            var test = false;
+            for(var j =0; j<x_date.length; j++){
+                if(x_date[j] == JSON.stringify(meal.timestamp)){
+                    test = true;
+                    y_cal[j] += meal.calories;
+                    y_sugar[j] += meal.sugar;
+                    y_fat[j] += meal.fat;
+                    y_carb[j] += meal.carb;
+                    y_protein[j] += meal.protein;
+                    break;
+                }
+            }
+            if(test){
+                continue;
+            }
+            x_date.push(JSON.stringify(meal.timestamp));
+            y_cal.push(meal.calories);
+            y_sugar.push(meal.sugar);
+            y_fat.push(meal.fat);
+            y_carb.push(meal.carb);
+            y_protein.push(meal.protein);
+
+
+        }
+        console.info(x_date);
+        var calories = {
+            x: x_date,
+        	y: y_cal,
+            name: 'calories',
+            type: 'scatter'
+        };
+        var sugar = {
+            x: x_date,
+        	y: y_sugar,
+            name: 'sugar',
+            type: 'scatter'
+        };
+        var carbs = {
+            x: x_date,
+        	y: y_carb,
+            name: 'carbs',
+            type: 'scatter'
+        };
+        var fat = {
+            x: x_date,
+        	y: y_fat,
+            name: 'fat',
+            type: 'scatter'
+        };
+        var protein = {
+            x: x_date,
+        	y: y_protein,
+            name: 'protein',
+            type: 'scatter'
+        };
+        var data = [calories, sugar, carbs, fat, protein];
+    	Plotly.plot( TESTER, data );
+    }
+  });
+};

@@ -1,3 +1,11 @@
 <%- include('components/header') %>
+<script>
+$(document).ready(function(){
+  getMealsForCharting();
+});
+</script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<h1>Nutrition Progress</h1>
+<div id="tester" style="width: 100%;height:100%;"></div>
 
 <%- include('components/footer') %>

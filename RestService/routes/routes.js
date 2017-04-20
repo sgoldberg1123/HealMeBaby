@@ -107,6 +107,24 @@ module.exports = function(app, passport) {
     }
   });
 
+  app.get('/workout', function(req, res){
+    if(req.isAuthenticated()){
+      res.render('workout.ejs');
+    } else{
+      //res.redirect('/login');
+      res.render('workout.ejs');
+    }
+  });
+
+  app.get('/calendar', function(req, res){
+    if(req.isAuthenticated()){
+      res.render('calendar.ejs');
+    } else{
+      res.redirect('/login');
+
+    }
+  });
+
 
   //Get all meals for a user
   app.get('/user/meal/all', function(req, res){
