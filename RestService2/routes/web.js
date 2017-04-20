@@ -28,6 +28,10 @@ web.get('/health', function(req, res) {
   res.render('healthHistory.ejs');
 });
 
+web.get('/activities', function(req, res){
+  res.render('activity.ejs');
+});
+
 web.get('/meals', function(req, res){
   res.render('meals.ejs');
 });

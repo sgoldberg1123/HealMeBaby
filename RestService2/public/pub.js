@@ -52,6 +52,11 @@ $(document).ready(function(){
       sessionStorage.prevpage = '/profile';
       window.location.href = '/login';
     }
+  } else if(url == 'activities'){
+    if(!isLoggedin){
+      sessionStorage.prevpage = '/profile';
+      window.location.href = '/login';
+    }
   }
 });
 
@@ -498,4 +503,147 @@ var editSnapshotSubmit = function(){
       getAllUserHealthSnapshots();
     }
   });
+};
+
+//Gets all sport options and sets autocomplete for the activity name add and edit modals
+var getAllSports = function(){
+  var data = {
+    JWT: sessionStorage.token
+  };
+  $.post('/api/sport/all', data, function(res, status){
+    $( "#editActivityName" ).autocomplete({
+      source: res.data
+    });
+    $( "#activityName" ).autocomplete({
+      source: res.data
+    });
+  });
+};
+
+//get all activites for a given user and load
+//get all the meals for a user
+var getAllUserActivities = function(){
+  var data = {
+    JWT: sessionStorage.token
+  };
+  $.post('/api/workout/all', data, function(res, status){
+    if(res.status == 'FAILED'){
+      console.log("Get meals failed");
+    }
+    else{
+      $("#activityTableBody").empty();
+      for(var i = 0; i<res.data.length; i++){
+        var activity = res.data[i];
+        var id = activity.workout_id;
+        var name = (activity.name) ? activity.name : "N/a";
+        var intensity = (activity.intensity) ? activity.intensity : "N/a";
+        var caloriesBurnt = (activity.calorie_burn) ? activity.calorie_burn : "N/a";
+        var timestamp = (activity.timestamp) ? activity.timestamp : "N/a";
+        var length = (activity.length) ? activity.length : "N/a";
+        $("#activityTableBody").append(
+            `
+            <tr>
+              <td>${name}</td>
+              <td>${intensity}</td>
+              <td>${caloriesBurnt}</td>
+              <td>${timestamp}</td>
+              <td>${length}</td>
+              <td><button class="btn btn-warning btn-sm" data-toggle="tooltip" title="Edit This Activity" onclick="editActivity(${id})"><span class="glyphicon glyphicon-pencil"></span></button></td>
+              <td><button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete This Meal" onclick="deleteActivity(${id})"><span class="glyphicon glyphicon-remove"></span></button></td>
+            </tr>
+            `
+        );
+      }
+    }
+  });
+};
+
+//add a new activity item
+var newActivitySubmit = function(){
+  var data = {
+    JWT: sessionStorage.token,
+    name: $('#activityName')[0].value,
+    intensity: $('#intensity')[0].value,
+    calorieBurn: $('#caloriesBurnt')[0].value,
+    timestamp: $('#date')[0].value,
+    length: $('#length')[0].value,
+  };
+  $.post('/api/workout/insert', data, function(res, status){
+    if(res.status == 'FAILED'){
+      console.log("Insert activity failed");
+    }
+    else{
+      $('#addActivityModal').modal('hide');
+      getAllUserActivities();
+    }
+  });
+};
+
+//edit a activity- retrieve info
+var editActivity = function(workout_id){
+  $.post('/api/workout',
+  {
+    workout_id: workout_id,
+    JWT: sessionStorage.token
+  },
+  function(res, status){
+    var activity = res.data;
+    var id = activity.workout_id;
+    var name = (activity.name) ? activity.name : "N/a";
+    var intensity = (activity.intensity) ? activity.intensity : "N/a";
+    var caloriesBurnt = (activity.calorie_burn) ? activity.calorie_burn : "N/a";
+    var timestamp = (activity.timestamp) ? activity.timestamp : "N/a";
+    var length = (activity.length) ? activity.length : "N/a";
+    $("#editActivityName").val(name);
+    $("#editIntensity").val(intensity);
+    $("#editCaloriesBurnt").val(caloriesBurnt);
+    $("#editLength").val(length);
+    $("#editDate").val(timestamp);
+    $("#editActivityId").val(id);
+    $('#editActivityModal').modal('show');
+  });
+};
+
+//Submit the edited activity form
+var editActivitySubmit = function(){
+  var data = {
+    JWT: sessionStorage.token,
+    workout_id:$('#editActivityId')[0].value,
+    name: $('#editActivityName')[0].value,
+    intensity: $('#editIntensity')[0].value,
+    calorieBurn: $('#editCaloriesBurnt')[0].value,
+    timestamp: $('#editDate')[0].value,
+    length: $('#editLength')[0].value
+  };
+  $.post('/api/workout/update', data, function(res, status){
+    if(res.status == 'FAILED'){
+      console.log("Update activity failed");
+    }
+    else{
+      $('#editActivityModal').modal('hide');
+      getAllUserActivities();
+    }
+  });
+};
+
+//Delete an activity by id
+var deleteActivity = function(activity_id){
+  var r = confirm("Are you sure you want to delete this activity");
+  if(r){
+    $.post('/api/workout/delete',
+    {
+      workout_id: activity_id,
+      JWT: sessionStorage.token
+    },
+    function(res, status){
+      if(res.status == 'FAILED'){
+        console.log('Activity deletion failed');
+      }
+      else{
+        if(r){
+          getAllUserActivities();
+        }
+      }
+    });
+  }
 };
