@@ -18,17 +18,17 @@ user.post('/signup', function(req, res){
       res.json({
         token: token,
         firstName: data.returnData.name,
-        status: true
+        status: 'SUCCESS'
       });
     }).catch((data) => {
       res.json({
         error: 'Email already in use',
-        status: false
+        status: 'FAILED'
       });
     });
   } else{
     res.json({
-      status: false,
+      status: 'FAILED',
       error: 'Fill out all fields'
     });
   }
@@ -44,18 +44,18 @@ user.post('/login', function(req, res){
       res.json({
         token: token,
         firstName: data.returnData.name,
-        status: true
+        status: 'SUCCESS'
       });
     })
     .catch((data) => {
       res.json({
-        status: false,
+        status: 'FAILED',
         error: 'Invalid Email or Password'
       });
     });
   } else {
     res.json({
-      status: false,
+      status: 'FAILED',
       error: 'Fill out all fields'
     });
   }
@@ -65,7 +65,7 @@ user.post('/login', function(req, res){
 user.post('/', function(req, res, next) {
   passport.authenticate('jwt', config.jwtConfig.jwtSession, function(err, user, info){
     if (err) { return next(err); }
-    if (!user) { return res.json({error: 'Please login'}); }
+    if (!user) { return res.json({status: 'FAILED', error: 'Please login'}); }
     userRepo.getUserById(user.user_id)
       .then((data) => res.json(data))
       .catch((data) => res.json(data));
@@ -73,13 +73,17 @@ user.post('/', function(req, res, next) {
 });
 
 user.post('/update', function(req, res, next) {
-  passport.authenticate('jwt', config.jwtConfig.jwtSession, function(err, user, info){
-    if (err) { return next(err); }
-    if (!user) { return res.json({error: 'Please login'}); }
-    userRepo.updateUserInfo(user.user_id, req.body.email, req.body.firstName, req.body.lastName)
-      .then((data) => res.json(data))
-      .catch((data) => res.json(data));
-  })(req, res, next);
+  if(req.body.email && req.body.firstName && req.body.lastName){
+    passport.authenticate('jwt', config.jwtConfig.jwtSession, function(err, user, info){
+      if (err) { return next(err); }
+      if (!user) { return res.json({status: 'FAILED', error: 'Please login'}); }
+      userRepo.updateUserInfo(user.user_id, req.body.email, req.body.firstName, req.body.lastName)
+        .then((data) => res.json(data))
+        .catch((data) => res.json(data));
+    })(req, res, next);
+  }else{
+      res.json({status: 'FAILED', error: 'Please fill out all fields'});
+  }
 });
 
 module.exports = user;

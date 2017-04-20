@@ -3,6 +3,8 @@ var express = require('express');
 var user = require('./user');
 var meal = require('./meal');
 var snapshot = require('./snapshot');
+var sport = require('./sport');
+var workout = require('./workout');
 
 const api = express.Router();
 
@@ -11,5 +13,7 @@ const api = express.Router();
 api.use('/user', user);
 api.use('/meal', meal);
 api.use('/snapshot', snapshot);
+api.use('/sport', sport);
+api.use('/workout', workout);
 
 module.exports = api;

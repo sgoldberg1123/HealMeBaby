@@ -2,39 +2,36 @@ var express = require('express');
 var passport = require('passport');
 require('../../config/passport')(passport);
 var config = require('../../config/config');
-var mealRepo = require('../../dbRepos/mealRepo');
+var workoutRepo = require('../../dbRepos/workoutRepo');
 
-const meal = express.Router();
+const workout = express.Router();
 
-meal.post('/all', function(req, res, next){
+workout.post('/all', function(req, res, next){
   passport.authenticate('jwt', config.jwtConfig.jwtSession, function(err, user, info){
     if(err){ return next(err); }
     else if(!user){ return res.json({status: 'FAILED', error: 'Please login'}); }
     else{
       var id = user.user_id;
-      mealRepo.getAllUserMeals(id).then((data)=> res.json(data))
+      workoutRepo.getAllUserWorkouts(id).then((data)=> res.json(data))
       .catch((data) => res.json(data));
     }
   })(req, res, next);
 });
 
-meal.post('/insert', function(req, res, next){
-  if(req.body.calories && req.body.foodName && req.body.sugar && req.body.date && req.body.protein && req.body.fat && req.body.mealType && req.body.carb){
+workout.post('/insert', function(req, res, next){
+  if(req.body.name && req.body.intensity && req.body.calorieBurn && req.body.timestamp && req.body.length){
     passport.authenticate('jwt', config.jwtConfig.jwtSession, function(err, user, info){
       if(err){ return next(err); }
       else if(!user){ return res.json({status: 'FAILED', error: 'Please login'}); }
       else{
-        var id = user.user_id;
-        var calories = req.body.calories;
-        var foodName = req.body.foodName;
-        var sugar = req.body.sugar;
-        var date = req.body.date;
-        var protein = req.body.protein;
-        var fat = req.body.fat;
-        var mealType = req.body.mealType;
-        var carb = req.body.carb
+        var user_id = user.user_id;
+        var name = req.body.name;
+        var intensity = req.body.intensity;
+        var calorieBurn = req.body.calorieBurn;
+        var timestamp = req.body.timestamp;
+        var length = req.body.length;
 
-        mealRepo.insertUserMeal(id, foodName, sugar, calories, protein, fat, mealType,carb, date)
+        workoutRepo.insertUserWorkout(user_id, name, intensity, calorieBurn, timestamp, length)
           .then((data)=> res.json(data))
           .catch((data) => res.json(data));
       }
@@ -44,14 +41,14 @@ meal.post('/insert', function(req, res, next){
   }
 });
 
-meal.post('/delete', function(req, res, next){
-  if(req.body.meal_id){
+workout.post('/delete', function(req, res, next){
+  if(req.body.workout_id){
     passport.authenticate('jwt', config.jwtConfig.jwtSession, function(err, user, info){
       if(err){ return next(err); }
       else if(!user){ return res.json({status: 'FAILED', error: 'Please login'}); }
       else{
-        var meal_id = req.body.meal_id;
-        mealRepo.deleteMealById(meal_id)
+        var workout_id = req.body.workout_id;
+        workoutRepo.deleteWorkoutById(workout_id)
           .then((data) => res.json(data))
           .catch((data) => res.json(data));
       }
@@ -61,15 +58,15 @@ meal.post('/delete', function(req, res, next){
   }
 });
 
-//Get a single meal by id
-meal.post('/', function(req, res, next){
-  if(req.body.meal_id){
+//Get a single workout by id
+workout.post('/', function(req, res, next){
+  if(req.body.workout_id){
     passport.authenticate('jwt', config.jwtConfig.jwtSession, function(err, user, info){
       if(err){ return next(err); }
       else if(!user){ return res.json({status: 'FAILED', error: 'Please login'}); }
       else{
-        var meal_id = req.body.meal_id;
-        mealRepo.getMealById(meal_id)
+        var workout_id = req.body.workout_id;
+        workoutRepo.getWorkoutById(workout_id)
           .then((data) => res.json(data))
           .catch((data) => res.json(data));
       }
@@ -79,23 +76,21 @@ meal.post('/', function(req, res, next){
   }
 });
 
-//Update a single meal by id
-meal.post('/update', function(req, res, next){
-  if(req.body.meal_id && req.body.calories && req.body.foodName && req.body.sugar && req.body.date && req.body.protein && req.body.fat && req.body.mealType && req.body.carb){
+//Update a single workout by id
+workout.post('/update', function(req, res, next){
+  if(req.body.workout_id && req.body.name && req.body.intensity && req.body.calorieBurn && req.body.timestamp && req.body.length){
     passport.authenticate('jwt', config.jwtConfig.jwtSession, function(err, user, info){
       if(err){ return next(err); }
       else if(!user){ return res.json({status: 'FAILED', error: 'Please login'}); }
       else{
-        var meal_id = req.body.meal_id;
-        var calories = req.body.calories;
-        var foodName = req.body.foodName;
-        var sugar = req.body.sugar;
-        var date = req.body.date;
-        var protein = req.body.protein;
-        var fat = req.body.fat;
-        var mealType = req.body.mealType;
-        var carb = req.body.carb;
-        mealRepo.updateMealById(meal_id, foodName, calories, sugar, protein, fat, mealType, carb, date)
+        var workout_id = req.body.workout_id;
+        var name = req.body.name;
+        var intensity = req.body.intensity;
+        var calorieBurn = req.body.calorieBurn;
+        var timestamp = req.body.timestamp;
+        var length = req.body.length;
+
+        workoutRepo.updateWorkoutById(workout_id, name, intensity, calorieBurn, length, timestamp)
           .then((data) => res.json(data))
           .catch((data) => res.json(data));
       }
@@ -105,4 +100,4 @@ meal.post('/update', function(req, res, next){
   }
 });
 
-module.exports = meal;
+module.exports = workout;

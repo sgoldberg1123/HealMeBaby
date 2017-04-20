@@ -52,6 +52,11 @@ $(document).ready(function(){
       sessionStorage.prevpage = '/profile';
       window.location.href = '/login';
     }
+  } else if(url == 'activities'){
+    if(!isLoggedin){
+      sessionStorage.prevpage = '/profile';
+      window.location.href = '/login';
+    }
   }
 });
 
@@ -215,11 +220,11 @@ var getRecentUserSnapshot = function(){
     } else if (res.error){
       console.log("Didn't find user snapshot")
     } else{
-      $("#weight").val(res.data[0].weight);
-      $("#height").val(res.data[0].height);
-      $("#bloodPressureSys").val(res.data[0].blood_pressure_systolic);
-      $("#bloodPressureDist").val(res.data[0].blood_pressure_distolic);
-      $("#heartRate").val(res.data[0].heart_rate);
+      $("#weight").val(res.data.weight);
+      $("#height").val(res.data.height);
+      $("#bloodPressureSys").val(res.data.blood_pressure_systolic);
+      $("#bloodPressureDist").val(res.data.blood_pressure_distolic);
+      $("#heartRate").val(res.data.heart_rate);
     }
   });
 };
@@ -262,6 +267,7 @@ var getAllUserHealthSnapshots = function(){
       $("#healthHistoryTableBody").empty();
       for(var i = 0; i<res.data.length; i++){
         var snapshot = res.data[i];
+        var id = snapshot.health_snapshot_id
         var height = (snapshot.height) ? snapshot.height : "N/a";
         var weight = (snapshot.weight) ? snapshot.weight : "N/a";
         var bloodPressureSys = (snapshot.blood_pressure_systolic) ? snapshot.blood_pressure_systolic : "N/a";
@@ -276,6 +282,8 @@ var getAllUserHealthSnapshots = function(){
               <td>${bloodPressureSys}</td>
               <td>${bloodPressureDist}</td>
               <td>${heartRate}</td>
+              <td><button class="btn btn-warning btn-sm" data-toggle="tooltip" title="Edit This Health Snapshot" onclick="editSnapshot(${id})"><span class="glyphicon glyphicon-pencil"></span></button></td>
+              <td><button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete This Health Snapshot" onclick="deleteSnapshot(${id})"><span class="glyphicon glyphicon-remove"></span></button></td>
             </tr>
             `
         );
@@ -334,7 +342,7 @@ var editMeal = function(meal_id){
     JWT: sessionStorage.token
   },
   function(res, status){
-    var meal = res.data[0];
+    var meal = res.data;
     var id = (meal.meal_id);
     var foodName = (meal.food_name) ? meal.food_name : "";
     var timestamp = (meal.timestamp) ? meal.timestamp : "";
@@ -428,6 +436,7 @@ var deleteMeal = function(meal_id){
   }
 };
 
+
 var getMealsForCharting = function(){
     var data = {
       JWT: sessionStorage.token
@@ -507,3 +516,216 @@ var getMealsForCharting = function(){
     }
   });
 };
+
+//Delete a health snapshot by id
+var deleteSnapshot = function(snapshot_id){
+  var r = confirm("Are you sure you want to delete this health snapshot");
+  if(r){
+    $.post('/api/snapshot/delete',
+    {
+      snapshot_id: snapshot_id,
+      JWT: sessionStorage.token
+    },
+    function(res, status){
+      if(res.status == 'FAILED'){
+        console.log('Snapshot deletion failed');
+      }
+      else{
+        if(r){
+          getAllUserHealthSnapshots();
+        }
+      }
+    });
+  }
+};
+
+//edit a snapshot - retrieve info
+var editSnapshot = function(snapshot_id){
+  $.post('/api/snapshot',
+  {
+    snapshot_id: snapshot_id,
+    JWT: sessionStorage.token
+  },
+  function(res, status){
+    var snapshot = res.data;
+    var id = snapshot.health_snapshot_id
+    var height = (snapshot.height) ? snapshot.height : "N/a";
+    var weight = (snapshot.weight) ? snapshot.weight : "N/a";
+    var bloodPressureSys = (snapshot.blood_pressure_systolic) ? snapshot.blood_pressure_systolic : "N/a";
+    var bloodPressureDist = (snapshot.blood_pressure_distolic) ? snapshot.blood_pressure_distolic : "N/a";
+    var heartRate = (snapshot.heart_rate) ? snapshot.heart_rate : "N/a";
+    $("#editSnapshotHeight").val(height);
+    $("#editSnapshotWeight").val(weight);
+    $("#editSnapshotBloodPressureSys").val(bloodPressureSys);
+    $("#editSnapshotBloodPressureDist").val(bloodPressureDist);
+    $("#editSnapshotHeartRate").val(heartRate);
+    $("#editSnapshotId").val(id);
+    $("#editSnapshotModal").modal('show');
+  });
+};
+
+//edit a meal - submit new data
+var editSnapshotSubmit = function(){
+  var data = {
+    JWT: sessionStorage.token,
+    snapshot_id: $('#editSnapshotId')[0].value,
+    height: $('#editSnapshotHeight')[0].value,
+    weight: $('#editSnapshotWeight')[0].value,
+    blood_pressure_systolic: $('#editSnapshotBloodPressureSys')[0].value,
+    blood_pressure_distolic: $('#editSnapshotBloodPressureDist')[0].value,
+    heart_rate: $('#editSnapshotHeartRate')[0].value,
+  };
+  $.post('/api/snapshot/update', data, function(res, status){
+    if(res.status == 'FAILED'){
+      console.log("Update snapshot failed");
+    }
+    else{
+      $('#editSnapshotModal').modal('hide');
+      getAllUserHealthSnapshots();
+    }
+  });
+};
+
+//Gets all sport options and sets autocomplete for the activity name add and edit modals
+var getAllSports = function(){
+  var data = {
+    JWT: sessionStorage.token
+  };
+  $.post('/api/sport/all', data, function(res, status){
+    $( "#editActivityName" ).autocomplete({
+      source: res.data
+    });
+    $( "#activityName" ).autocomplete({
+      source: res.data
+    });
+  });
+};
+
+//get all activites for a given user and load
+//get all the meals for a user
+var getAllUserActivities = function(){
+  var data = {
+    JWT: sessionStorage.token
+  };
+  $.post('/api/workout/all', data, function(res, status){
+    if(res.status == 'FAILED'){
+      console.log("Get meals failed");
+    }
+    else{
+      $("#activityTableBody").empty();
+      for(var i = 0; i<res.data.length; i++){
+        var activity = res.data[i];
+        var id = activity.workout_id;
+        var name = (activity.name) ? activity.name : "N/a";
+        var intensity = (activity.intensity) ? activity.intensity : "N/a";
+        var caloriesBurnt = (activity.calorie_burn) ? activity.calorie_burn : "N/a";
+        var timestamp = (activity.timestamp) ? activity.timestamp : "N/a";
+        var length = (activity.length) ? activity.length : "N/a";
+        $("#activityTableBody").append(
+            `
+            <tr>
+              <td>${name}</td>
+              <td>${intensity}</td>
+              <td>${caloriesBurnt}</td>
+              <td>${timestamp}</td>
+              <td>${length}</td>
+              <td><button class="btn btn-warning btn-sm" data-toggle="tooltip" title="Edit This Activity" onclick="editActivity(${id})"><span class="glyphicon glyphicon-pencil"></span></button></td>
+              <td><button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete This Meal" onclick="deleteActivity(${id})"><span class="glyphicon glyphicon-remove"></span></button></td>
+            </tr>
+            `
+        );
+      }
+    }
+  });
+};
+
+//add a new activity item
+var newActivitySubmit = function(){
+  var data = {
+    JWT: sessionStorage.token,
+    name: $('#activityName')[0].value,
+    intensity: $('#intensity')[0].value,
+    calorieBurn: $('#caloriesBurnt')[0].value,
+    timestamp: $('#date')[0].value,
+    length: $('#length')[0].value,
+  };
+  $.post('/api/workout/insert', data, function(res, status){
+    if(res.status == 'FAILED'){
+      console.log("Insert activity failed");
+    }
+    else{
+      $('#addActivityModal').modal('hide');
+      getAllUserActivities();
+    }
+  });
+};
+
+//edit a activity- retrieve info
+var editActivity = function(workout_id){
+  $.post('/api/workout',
+  {
+    workout_id: workout_id,
+    JWT: sessionStorage.token
+  },
+  function(res, status){
+    var activity = res.data;
+    var id = activity.workout_id;
+    var name = (activity.name) ? activity.name : "N/a";
+    var intensity = (activity.intensity) ? activity.intensity : "N/a";
+    var caloriesBurnt = (activity.calorie_burn) ? activity.calorie_burn : "N/a";
+    var timestamp = (activity.timestamp) ? activity.timestamp : "N/a";
+    var length = (activity.length) ? activity.length : "N/a";
+    $("#editActivityName").val(name);
+    $("#editIntensity").val(intensity);
+    $("#editCaloriesBurnt").val(caloriesBurnt);
+    $("#editLength").val(length);
+    $("#editDate").val(timestamp);
+    $("#editActivityId").val(id);
+    $('#editActivityModal').modal('show');
+  });
+};
+
+//Submit the edited activity form
+var editActivitySubmit = function(){
+  var data = {
+    JWT: sessionStorage.token,
+    workout_id:$('#editActivityId')[0].value,
+    name: $('#editActivityName')[0].value,
+    intensity: $('#editIntensity')[0].value,
+    calorieBurn: $('#editCaloriesBurnt')[0].value,
+    timestamp: $('#editDate')[0].value,
+    length: $('#editLength')[0].value
+  };
+  $.post('/api/workout/update', data, function(res, status){
+    if(res.status == 'FAILED'){
+      console.log("Update activity failed");
+    }
+    else{
+      $('#editActivityModal').modal('hide');
+      getAllUserActivities();
+    }
+  });
+};
+
+//Delete an activity by id
+var deleteActivity = function(activity_id){
+  var r = confirm("Are you sure you want to delete this activity");
+  if(r){
+    $.post('/api/workout/delete',
+    {
+      workout_id: activity_id,
+      JWT: sessionStorage.token
+    },
+    function(res, status){
+      if(res.status == 'FAILED'){
+        console.log('Activity deletion failed');
+      }
+      else{
+        if(r){
+          getAllUserActivities();
+        }
+      }
+    });
+  }
+};
+

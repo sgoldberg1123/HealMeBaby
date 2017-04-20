@@ -1,11 +1,11 @@
 var dbConn = require('../config/dbConn');
 
-//Delete a single meal by id
-module.exports.deleteMealById = function(id){
+//Delete a single workout by id
+module.exports.deleteWorkoutById = function(id){
   return new Promise(function(resolve, reject){
     var sql = 'DELETE '+
-    'FROM health.meal ' +
-    'WHERE health.meal.meal_id = ? ';
+    'FROM health.workout ' +
+    'WHERE health.workout.workout_id = ? ';
     dbConn.query(sql, [id], function(err, rows){
       if(err){
         console.info(err);
@@ -18,54 +18,51 @@ module.exports.deleteMealById = function(id){
   });
 };
 
-//Update a single meal by id
-module.exports.updateMealById = function(id, foodName, calories, sugar, protein, fat, mealType, carb, date){
+//Update a single workout by id
+module.exports.updateWorkoutById = function(id, name, intensity, calorieBurn, length, date){
   return new Promise(function(resolve, reject){
-    var sql = 'UPDATE health.meal '+
-    'SET food_name = ?, ' +
-    'calories = ?, ' +
-    'sugar = ?, ' +
-    'protein = ?, ' +
-    'fat = ?, ' +
-    'meal_type = ?, ' +
-    'carb = ?, ' +
+    var sql = 'UPDATE health.workout '+
+    'SET name = ?, ' +
+    'intensity = ?, ' +
+    'calorie_burn = ?, ' +
+    'length = ?, ' +
     'timestamp = ? ' +
-    'WHERE meal_id = ?';
-    dbConn.query(sql, [foodName, calories, sugar, protein, fat, mealType, carb, date, id], function(err, rows){
+    'WHERE workout_id = ?';
+    dbConn.query(sql, [name, intensity, calorieBurn, length, date, id], function(err, rows){
       if(err){
         console.info(err);
         reject({status: 'FAILED', error: 'UNKNOWN ERROR'});
       } else if(!rows.changedRows){
-        reject({status: 'FAILED', error: 'cant find meal or no change'});
+        reject({status: 'FAILED', error: 'cant find workout or no change'});
       }
       resolve({status: 'SUCCESS'});
     });
   });
 };
 
-//Get a single meal by id
-module.exports.getMealById = function(id){
+//Get a single workout by id
+module.exports.getWorkoutById = function(id){
   return new Promise(function(resolve, reject){
     var sql = 'SELECT * '+
-    'FROM health.meal meal ' +
-    'WHERE meal.meal_id = ? ';
+    'FROM health.workout workout ' +
+    'WHERE workout.workout_id = ? ';
     dbConn.query(sql, [id], function(err, rows){
       if(err){
         console.info(err);
         reject({status: 'FAILED', error: 'UNKNOWN ERROR'});
       }else if(!rows.length){
-        reject({status: 'FAILED', error: 'cant find meal'});
+        reject({status: 'FAILED', error: 'cant find workout'});
       }
       resolve({data: rows[0], status: 'SUCCESS'});
     });
   });
 };
 
-//Get all of the meals for a user with the given id
-module.exports.getAllUserMeals = function(id){
+//Get all of the workouts for a user with the given id
+module.exports.getAllUserWorkouts = function(id){
   return new Promise(function(resolve, reject){
-    var sql = 'SELECT meal_id, calories, food_name, protein, carb, fat, sugar, timestamp, meal_type ' +
-    'FROM health.meal ' +
+    var sql = 'SELECT workout_id, name, intensity, calorie_burn, timestamp, length ' +
+    'FROM health.workout ' +
     'WHERE User_user_id = ?';
     dbConn.query(sql, [id], function(err,rows){
       if(err){
@@ -77,11 +74,11 @@ module.exports.getAllUserMeals = function(id){
   });
 };
 
-//Insert a new meal given various meal parameters
-module.exports.insertUserMeal = function(user_id, foodName, sugar, calories, protein, fat, mealType, carb, date){
+//Insert a new workout given various workout parameters
+module.exports.insertUserWorkout = function(user_id, name, intensity, calorieBurn, timestamp, length){
   return new Promise(function(resolve, reject){
-    var sql = 'INSERT INTO health.meal (food_name, calories, sugar, protein, fat, meal_type, carb, User_user_id, timestamp) VALUES (?,?,?,?,?,?,?,?,?)';
-    dbConn.query(sql, [foodName, calories, sugar, protein, fat, mealType, carb, user_id, date],
+    var sql = 'INSERT INTO health.workout (name, intensity, calorie_burn, timestamp, length, User_user_id) VALUES (?,?,?,?,?,?)';
+    dbConn.query(sql, [name, intensity, calorieBurn, timestamp, length, user_id],
       function(err){
         if(err){
           console.info(err);
