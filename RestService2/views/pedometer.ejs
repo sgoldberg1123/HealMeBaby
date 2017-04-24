@@ -1,0 +1,23 @@
+<%- include('components/header') %>
+<script>
+  $(document).ready(function(){
+    getAllDailyStepCounts();
+  });
+</script>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Step Count</th>
+      <th>Date</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody id="pedometerTableBody">
+    <tr>
+      <td>
+        Loading
+      </td>
+    </tr>
+  </tbody>
+</table>
+<%- include('components/footer') %>

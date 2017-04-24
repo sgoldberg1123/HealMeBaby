@@ -19,6 +19,10 @@ web.get('/nutrition', function(req, res) {
   res.render('nutritionSearch.ejs');
 });
 
+web.get('/pedometer', function(req, res) {
+  res.render('pedometer.ejs');
+});
+
 web.get('/profile', function(req, res) {
   res.render('profile.ejs');
 });
