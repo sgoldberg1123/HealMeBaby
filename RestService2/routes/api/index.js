@@ -5,6 +5,7 @@ var meal = require('./meal');
 var snapshot = require('./snapshot');
 var sport = require('./sport');
 var workout = require('./workout');
+var lift = require('./lift');
 
 const api = express.Router();
 
@@ -15,5 +16,6 @@ api.use('/meal', meal);
 api.use('/snapshot', snapshot);
 api.use('/sport', sport);
 api.use('/workout', workout);
+api.use('/lift', lift);
 
 module.exports = api;

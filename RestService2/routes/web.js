@@ -40,4 +40,8 @@ web.get('/chart', function(req, res){
   res.render('chart.ejs');
 });
 
+web.get('/lift', function(req,res){
+  res.render('lift.ejs');
+});
+
 module.exports = web;
