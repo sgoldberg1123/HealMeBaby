@@ -57,6 +57,11 @@ $(document).ready(function(){
       sessionStorage.prevpage = '/profile';
       window.location.href = '/login';
     }
+  } else if(url == 'pedometer'){
+    if(!isLoggedin){
+      sessionStorage.prevpage = '/profile';
+      window.location.href = '/login';
+    }
   }
 });
 
@@ -729,3 +734,53 @@ var deleteActivity = function(activity_id){
   }
 };
 
+//Get all daily step counts
+var getAllDailyStepCounts = function(){
+  var data = {
+    JWT: sessionStorage.token
+  };
+  $.post('/api/dailyStepCount/all', data, function(res, status){
+    if(res.status == 'FAILED'){
+      console.log("Get meals failed");
+    }
+    else{
+      $("#pedometerTableBody").empty();
+      for(var i = 0; i<res.data.length; i++){
+        var dailyStepCount = res.data[i];
+        var step_count = (dailyStepCount.step_count) ? dailyStepCount.step_count : "N/a";
+        var date = (dailyStepCount.date) ? dailyStepCount.date : "N/a";
+        var id = dailyStepCount.daily_step_count_id
+        $("#pedometerTableBody").append(
+            `
+            <tr>
+              <td>${step_count}</td>
+              <td>${date}</td>
+              <td><button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete This Step Count" onclick="deleteDailyStepCount(${id})"><span class="glyphicon glyphicon-remove"></span></button></td>
+            </tr>
+            `
+        );
+      }
+    }
+  });
+};
+
+var deleteDailyStepCount = function(step_count_id){
+  var r = confirm("Are you sure you want to delete this step count?");
+  if(r){
+    $.post('/api/dailyStepCount/delete',
+    {
+      step_count_id: step_count_id,
+      JWT: sessionStorage.token
+    },
+    function(res, status){
+      if(res.status == 'FAILED'){
+        console.log("Get step count failed");
+      }
+      else{
+        if(r){
+          getAllDailyStepCounts();
+        }
+      }
+    });
+  }
+};

@@ -6,6 +6,8 @@ var snapshot = require('./snapshot');
 var sport = require('./sport');
 var workout = require('./workout');
 var lift = require('./lift');
+var dailyStepCount = require('./dailyStepCount');
+
 
 const api = express.Router();
 
@@ -17,5 +19,7 @@ api.use('/snapshot', snapshot);
 api.use('/sport', sport);
 api.use('/workout', workout);
 api.use('/lift', lift);
+api.use('/dailyStepCount', dailyStepCount);
+
 
 module.exports = api;
