@@ -5,33 +5,59 @@ var config = require('../../config/config');
 var liftRepo = require('../../dbRepos/liftRepo');
 const lift = express.Router();
 
+
+// GET ALL LIFTS
+// Get all lifts using user_id
 lift.post('/all', function(req, res, next){
   passport.authenticate('jwt', config.jwtConfig.jwtSession, function(err, user, info){
     if(err){ return next(err); }
     else if(!user){ return res.json({status: 'FAILED', error: 'Please login'}); }
     else{
-      var id = user.user_id;
-      liftRepo.getAllUserLifts(id).then((data) => res.json(data))
+      var userId = user.user_id;
+      liftRepo.getAllUserLifts(userId).then((data) => res.json(data))
       .catch((data) => res.json(data));
     }
   })(req, res, next);
 });
 
+
+// GET LIFT 
+// get a single lift with a activity_id
+lift.post('/', function(req, res, next){
+  if(req.body.gymactivity_id){
+    passport.authenticate('jwt', config.jwtConfig.jwtSession, function(err, user, info){
+      if(err){ return next(err); }
+      else if(!user){ return res.json({status: 'FAILED', error: 'Please login'}); }
+      else{
+        var gymactivity_id = req.body.gymactivity_id;
+        
+        liftRepo.getLiftById(gymactivity_id)
+          .then((data) => res.json(data))
+          .catch((data) => res.json(data));
+      }
+    })(req, res, next);
+  } else {
+    res.json({status: 'FAILED', error: 'Please fill out all fields'});
+  }
+});
+
+
+// INSERT LIFT BY ID
+// Insert a new lift using user_id
 lift.post('/insert', function(req, res, next){
-  if(req.body.name && req.body.intensity && req.body.calorieBurn && req.body.timestamp && req.body.length){
+  if(req.body.name && req.body.weight && req.body.reps && req.body.days){
     passport.authenticate('jwt', config.jwtConfig.jwtSession, function(err, user, info){
       if(err){ return next(err); }
       else if(!user){ return res.json({status: 'FAILED', error: 'Please login'}); }
       else{
         var user_id = user.user_id;
-        var gym_workout_id = req.body.gym_workout_id;
         var name = req.body.name;
         var reps = req.body.reps;
         var weight = req.body.weight;
         var days = req.body.days;
         
 
-        liftRepo.insertUserWorkout(user_id, name, intensity, calorieBurn, timestamp, length)
+        liftRepo.insertUserLift(user_id, name, reps, weight, days)
           .then((data)=> res.json(data))
           .catch((data) => res.json(data));
       }
@@ -41,14 +67,42 @@ lift.post('/insert', function(req, res, next){
   }
 });
 
+
+// UPDATE LIFT BY ID
+// Update a single lift with a gymactivity_id
+lift.post('/update', function(req, res, next){
+  if(req.body.gymactivity_id && req.body.name && req.body.reps && req.body.weight && req.body.days){
+    passport.authenticate('jwt', config.jwtConfig.jwtSession, function(err, user, info){
+      if(err){ return next(err); }
+      else if(!user){ return res.json({status: 'FAILED', error: 'Please login'}); }
+      else{
+        var gymactivity_id = req.body.gymactivity_id;
+        var name = req.body.name;
+        var reps = req.body.reps;
+        var weight = req.body.weight;
+        var days = req.body.days;
+
+        liftRepo.updateLiftById(gymactivity_id, name, reps, weight, days)
+          .then((data) => res.json(data))
+          .catch((data) => res.json(data));
+      }
+    })(req, res, next);
+  } else {
+    res.json({status: 'FAILED', error: 'Please fill out all fields'});
+  }
+});
+
+
+// DELETE LIFT
+// Delete a single lift using user_id and gym_workout_id
 lift.post('/delete', function(req, res, next){
   if(req.body.lift_id){
     passport.authenticate('jwt', config.jwtConfig.jwtSession, function(err, user, info){
       if(err){ return next(err); }
       else if(!user){ return res.json({status: 'FAILED', error: 'Please login'}); }
       else{
-        var lift_id = req.body.lift_id;
-        liftRepo.deleteWorkoutById(lift_id)
+        var gymactivity_id = req.body.gymactivity_id;
+        liftRepo.deleteLiftById(gymactivity_id)
           .then((data) => res.json(data))
           .catch((data) => res.json(data));
       }
@@ -58,46 +112,5 @@ lift.post('/delete', function(req, res, next){
   }
 });
 
-//Get a single lift by id
-lift.post('/', function(req, res, next){
-  if(req.body.lift_id){
-    passport.authenticate('jwt', config.jwtConfig.jwtSession, function(err, user, info){
-      if(err){ return next(err); }
-      else if(!user){ return res.json({status: 'FAILED', error: 'Please login'}); }
-      else{
-        var lift_id = req.body.lift_id;
-        liftRepo.getWorkoutById(lift_id)
-          .then((data) => res.json(data))
-          .catch((data) => res.json(data));
-      }
-    })(req, res, next);
-  } else {
-    res.json({status: 'FAILED', error: 'Please fill out all fields'});
-  }
-});
-
-//Update a single lift by id
-lift.post('/update', function(req, res, next){
-  if(req.body.lift_id && req.body.name && req.body.intensity && req.body.calorieBurn && req.body.timestamp && req.body.length){
-    passport.authenticate('jwt', config.jwtConfig.jwtSession, function(err, user, info){
-      if(err){ return next(err); }
-      else if(!user){ return res.json({status: 'FAILED', error: 'Please login'}); }
-      else{
-        var lift_id = req.body.lift_id;
-        var name = req.body.name;
-        var intensity = req.body.intensity;
-        var calorieBurn = req.body.calorieBurn;
-        var timestamp = req.body.timestamp;
-        var length = req.body.length;
-
-        liftRepo.updateWorkoutById(lift_id, name, intensity, calorieBurn, length, timestamp)
-          .then((data) => res.json(data))
-          .catch((data) => res.json(data));
-      }
-    })(req, res, next);
-  } else {
-    res.json({status: 'FAILED', error: 'Please fill out all fields'});
-  }
-});
 
 module.exports = lift;
