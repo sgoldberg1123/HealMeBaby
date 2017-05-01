@@ -4,6 +4,13 @@
     getUserInfo();
     getRecentUserSnapshot();
   });
+  $('body').on('click', function (e) {
+    //did not click a popover toggle or popover
+    if ($(e.target).data('toggle') !== 'popover'
+        && $(e.target).parents('.popover.in').length === 0) {
+        $('[data-toggle="popover"]').popover('hide');
+    }
+  });
 </script>
 <div class="panel panel-primary" style="width:45%; float:left;">
   <div class="panel-heading">
@@ -34,7 +41,7 @@
           <label>Resting Heart Rate</label>
           <input type="number" name="heartRate" class="form-control" placeholder="Heart Rate" id="heartRate" />
       </div><!-- form-group -->
-      <button type="submit" onclick='insertSnapshot();' class="btn btn-primary">Save</button>
+      <button id="submitHealthSnapshot" type="submit" onclick='insertSnapshot();' class="btn btn-primary" title="Success" data-toggle="popover" data-placement="top" data-content="Your health snapshot was saved!">Save</button>
       <button type="button" onclick="getRecentUserSnapshot()" class="btn btn-default">Reset</button>
     </form>
   </div>
@@ -55,7 +62,7 @@
           <label>Last Name</label>
           <input type="text" name="lastName" class="form-control" placeholder="Last Name" id="lastName" />
       </div><!-- form-group -->
-      <button type="submit" onclick='updateUserInfo()' class="btn btn-primary">Save</button>
+      <button id="profileInfoSubmit" type="submit" onclick='updateUserInfo()' class="btn btn-primary" title="Success" data-toggle="popover" data-placement="top" data-content="Your profile info was updated!">Save</button>
       <button type="button" onclick="getUserInfo()" class="btn btn-default">Reset</button>
     </form>
   </div>
