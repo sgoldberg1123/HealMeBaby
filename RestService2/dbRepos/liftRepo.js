@@ -7,7 +7,7 @@ module.exports.getAllUserLifts = function(userId){
   return new Promise(function(resolve, reject){
     var sql = 'SELECT gym_activity_id, name, reps, weight, days' +
     'FROM health.gymactivity ' +
-    'WHERE user_id = ?';
+    'WHERE User_user_id = ?';
     dbConn.query(sql, [userId], function(err,rows){
       if(err){
         console.info(err);
