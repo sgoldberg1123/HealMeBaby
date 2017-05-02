@@ -5,9 +5,9 @@ var dbConn = require('../config/dbConn');
 //Get all lifts by  user_id
 module.exports.getAllUserLifts = function(userId){
   return new Promise(function(resolve, reject){
-    var sql = 'SELECT gym_activity_id, name, reps, weight, days' +
+    var sql = 'SELECT gym_activity_id, name, reps, weight, days ' +
     'FROM health.gymactivity ' +
-    'WHERE User_user_id = ?';
+    'WHERE user_id = ?';
     dbConn.query(sql, [userId], function(err,rows){
       if(err){
         console.info(err);

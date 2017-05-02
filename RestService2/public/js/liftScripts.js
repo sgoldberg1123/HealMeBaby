@@ -26,8 +26,8 @@ var getAllUserLifts = function(){
                 <td>${weight}</td>
                 <td>${days}</td>
                 
-                <td><button class="btn btn-warning btn-sm" data-toggle="tooltip" title="Edit This Lift" onclick="editLift(${id})"><span class="glyphicon glyphicon-pencil"></span></button></td>
-                <td><button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete This Meal" onclick="deleteLift(${id})"><span class="glyphicon glyphicon-remove"></span></button></td>
+                <td><button class="btn btn-warning btn-sm" data-toggle="tooltip" title="Edit This Lift" onclick="editLift(${gymactivity_id})"><span class="glyphicon glyphicon-pencil"></span></button></td>
+                <td><button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete This Meal" onclick="deleteLift(${gymactivity_id})"><span class="glyphicon glyphicon-remove"></span></button></td>
             </tr>
             `
         );
