@@ -210,6 +210,7 @@ var updateUserInfo = function(){
     }
     else{
       getUserInfo();
+      $("#profileInfoSubmit").popover("show");
     }
   });
 };
@@ -255,6 +256,7 @@ var insertSnapshot = function(){
     }
     else{
       getRecentUserSnapshot();
+      $("#submitHealthSnapshot").popover("show");
     }
   });
 };
