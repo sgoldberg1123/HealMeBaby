@@ -48,7 +48,7 @@ module.exports.insertUserLift = function(user_id, name, reps, weight, days){
       function(err){
         if(err){
           console.info(err);
-          reject({status:'FAILED', error: 'UNKNOWN ERROR'});
+          reject({status:'FAILED', error: err});
         }
         else{
           resolve({status:'SUCCESS'});

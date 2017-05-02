@@ -644,6 +644,7 @@ var getAllUserActivities = function(){
   });
 };
 
+
 //add a new activity item
 var newActivitySubmit = function(){
   var data = {
