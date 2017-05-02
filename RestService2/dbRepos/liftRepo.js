@@ -24,7 +24,7 @@ module.exports.getAllUserLifts = function(userId){
 module.exports.getLiftById = function(gymactivityId){
   return new Promise(function(resolve, reject){
     var sql = 'SELECT * '+
-    'FROM health.gymactivity' +
+    'FROM health.gymactivity ' +
     'WHERE gymactivity.gym_activity_id = ? ';
     dbConn.query(sql, [gymactivityId], function(err, rows){
       if(err){

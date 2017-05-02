@@ -60,3 +60,23 @@ var newLiftSubmit = function(){
     }
   });
 };
+
+var editLift = function(gymactivity_id){
+    $.post('/api/lift',
+    {
+        gymactivity_id: gymactivity_id,
+        JWT: sessionStorage.token
+    },
+    function(res, status){
+        var gymactivity = res.data;
+        console.info(gymactivity);
+        var name = (gymactivity.name) ? gymactivity.name : "";
+        var reps = (gymactivity.reps) ? gymactivity.reps : "";
+        var weight = (gymactivity.weight) ? gymactivity.weight : "";
+        var days = (gymactivity.days) ? gymactivity.days : "";
+        $("#editName").val(name);
+        $("editReps").val(reps);
+        $("editWeight").val(weight);
+        $("editDays").val(days);
+    });
+};
