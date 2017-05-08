@@ -77,6 +77,7 @@ var newLiftSubmit = function(){
         console.info(data);
       $('#addLiftModal').modal('hide');
       getAllUserLifts();
+      liftCalendar();
     }
   });
 };
@@ -126,6 +127,7 @@ var editLiftSubmit = function(){
     else{
       $('#editLiftModal').modal('hide');
       getAllUserLifts();
+      liftCalendar();
     }
   });
 };
@@ -144,6 +146,7 @@ var deleteLift = function(gymactivityId){
       }
       else{
           getAllUserLifts();
+          liftCalendar();
         
       }
     });
