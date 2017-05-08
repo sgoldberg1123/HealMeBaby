@@ -68,7 +68,7 @@ module.exports.updateLiftById = function(gymactivityId, name, reps, weight, days
     'SET name = ?, ' +
     'reps = ?, ' +
     'weight = ?, ' +
-    'days = ?, ' +
+    'days = ? ' +
     'WHERE gym_activity_id = ? ';
     dbConn.query(sql, [name, reps, weight, days, gymactivityId], function(err, rows){
       if(err){

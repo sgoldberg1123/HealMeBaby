@@ -46,8 +46,26 @@ var newLiftSubmit = function(){
     weight: $('#weight')[0].value,
     days: $('#days')[0].value
   };
-  if(data.days == "Sunday"){
-      data.days = 1;
+  if(days == 1){
+      days = "Sunday";
+  }
+  else if (days == 2) {
+      days = "Monday";
+  } 
+  else if(days == 3) {
+      days = "Tuesday";
+  }
+  else if(days == 4){
+      days = "Wednesday";
+  }
+  else if(days == 5){
+      days = "Thursday";
+  }
+  else if(days == 6){
+      days = "Friday";
+  }
+  else if(days == 7){
+      days = "Saturday";
   }
   $.post('/api/lift/insert', data, function(res, status){
     if(res.status == 'FAILED'){
@@ -90,14 +108,14 @@ var editLift = function(gymactivity_id){
 var editLiftSubmit = function(){
   var data = {
     JWT: sessionStorage.token,
-    gymactivity_id: $('#editLiftId')[0].value,
+    gymactivity_id: parseInt($('#editLiftId')[0].value),
     name: $('#editName')[0].value,
     reps: $('#editReps')[0].value,
     weight: $('#editWeight')[0].value,
     days: $('#editDays')[0].value
   };
   if(data.days == "Sunday"){
-      data.days = "1";
+      data.days = parseInt("1");
   }
   console.info(data);
   $.post('/api/lift/update', data, function(res, status){
@@ -110,4 +128,23 @@ var editLiftSubmit = function(){
       getAllUserLifts();
     }
   });
+};
+
+//delete a meal
+var deleteLift = function(gymactivityId){
+    $.post('/api/lift/delete',
+    {
+      gymactivity_id: gymactivityId,
+      JWT: sessionStorage.token
+    },
+    function(res, status){
+      if(res.status == 'FAILED'){
+        console.log("Get Lifts failed");
+        console.log(res.error);
+      }
+      else{
+          getAllUserLifts();
+        
+      }
+    });
 };

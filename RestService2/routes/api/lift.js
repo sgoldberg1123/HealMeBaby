@@ -96,7 +96,7 @@ lift.post('/update', function(req, res, next){
 // DELETE LIFT
 // Delete a single lift using user_id and gym_workout_id
 lift.post('/delete', function(req, res, next){
-  if(req.body.lift_id){
+  if(req.body.gymactivity_id){
     passport.authenticate('jwt', config.jwtConfig.jwtSession, function(err, user, info){
       if(err){ return next(err); }
       else if(!user){ return res.json({status: 'FAILED', error: 'Please login'}); }
