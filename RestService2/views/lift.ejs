@@ -3,9 +3,36 @@
 <script>
   $(document).ready(function(){
     getAllUserLifts();
+    liftCalendar();
   });
 </script>
+<table class="table">
+  <thead>
+    <th>Sunday</th>
+    <th>Monday</th>
+    <th>Tuesday</th>
+    <th>Wednesday</th>
+    <th>Thursday</th>
+    <th>Friday</th>
+    <th>Saturday</th>
+  </thead>
+  <tbody  id="LiftCalendar">
+    <tr>
+      <td id="SunCal"></td>
+      <td id="MonCal"></td>
+      <td id="TuesCal"></td>
+      <td id="WedCal"></td>
+      <td id="ThursCal"></td>
+      <td id="FridCal"></td>
+      <td id="SatCal"></td>
+    </tr>
+  </tbody>
+</table>
+
+
 <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addLiftModal">Add Lift</button>
+
+
 <table class="table">
   <thead>
     <tr>
@@ -13,6 +40,8 @@
       <th>Reps</th>
       <th>Weight</th>
       <th>Days</th>
+      <th>Edit</th>
+      <td>Delete</td>
     </tr>
   </thead>
   <tbody id="LiftTableBody">
@@ -23,8 +52,6 @@
     </tr>
   </tbody>
 </table>
-
-
 
 
 <!--Add Lift Modal -->

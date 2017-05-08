@@ -148,3 +148,44 @@ var deleteLift = function(gymactivityId){
       }
     });
 };
+
+var liftCalendar = function(){
+    var data = {
+    JWT: sessionStorage.token
+    };
+    $.post('/api/lift/all', data, function(res, status){
+    if(res.status == 'FAILED'){
+        console.log("Get lifts failed");
+    }
+    else{
+        console.info(res.data);
+        for(var i = 0; i<res.data.length; i++){
+            var lift = res.data[i];
+            var gymactivity_id = lift.gym_activity_id;
+            var name = (lift.name) ? lift.name : "N/a";
+            var days = (lift.days) ? lift.days : "N/a";
+            if( days == "Sunday"){
+                $("#SunCal").append(`<h3>${name}</h3>`);
+            }
+            if( days == "Monday"){
+                $("#MonCal").append(`<h3>${name}</h3>`);
+            }
+            if( days == "Tuesday"){
+                $("#TuesCal").append(`<h3>${name}</h3>`);
+            }
+            if( days == "Wednesday"){
+                $("#WedCal").append(`<h3>${name}</h3>`);
+            }
+            if( days == "Thursda"){
+                $("#ThursCal").append(`<h3>${name}</h3>`);
+            }
+            if( days == "Friday"){
+                $("#fridCal").append(`<h3>${name}</h3>`);
+            }
+            if( days == "Saturday"){
+                $("#SatCal").append(`<h3>${name}</h3>`);
+            }
+        }
+    }
+    });
+};
