@@ -25,7 +25,6 @@ var getAllUserLifts = function(){
                 <td>${name}</td>
                 <td>${reps}</td>
                 <td>${weight}</td>
-                <td>${days}</td>
 
                 <td><button class="btn btn-warning btn-sm" data-toggle="tooltip" title="Edit This Lift" onclick="editLift(${gymactivity_id})"><span class="glyphicon glyphicon-pencil"></span></button></td>
                 <td><button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete This Meal" onclick="deleteLift(${gymactivity_id})"><span class="glyphicon glyphicon-remove"></span></button></td>
@@ -46,27 +45,29 @@ var newLiftSubmit = function(){
     weight: $('#weight')[0].value,
     days: $('#days')[0].value
   };
-  if(days == 1){
-      days = "Sunday";
+  console.info('Before ' +data.days);
+  if(data.days == 'Sunday'){
+      data.days = "1000000";
   }
-  else if (days == 2) {
-      days = "Monday";
-  } 
-  else if(days == 3) {
-      days = "Tuesday";
+  else if (data.days == 'Monday') {
+      data.days = "0100000";
   }
-  else if(days == 4){
-      days = "Wednesday";
+  else if(data.days == 'Tuesday') {
+      data.days = "0010000";
   }
-  else if(days == 5){
-      days = "Thursday";
+  else if(data.days == 'Wednesday'){
+      data.days = "0001000";
   }
-  else if(days == 6){
-      days = "Friday";
+  else if(data.days == 'Thursday'){
+      data.days = "0000100";
   }
-  else if(days == 7){
-      days = "Saturday";
+  else if(data.days == 'Friday'){
+      data.days = "0000010";
   }
+  else if(data.days == 'Saturday'){
+      data.days = "0000001";
+  }
+  console.info('AFter ' +data.days);
   $.post('/api/lift/insert', data, function(res, status){
     if(res.status == 'FAILED'){
         console.log(data);
@@ -114,8 +115,26 @@ var editLiftSubmit = function(){
     weight: $('#editWeight')[0].value,
     days: $('#editDays')[0].value
   };
-  if(data.days == "Sunday"){
-      data.days = parseInt("1");
+  if(data.days == 'Sunday'){
+      data.days = "1000000";
+  }
+  else if (data.days == 'Monday') {
+      data.days = "0100000";
+  }
+  else if(data.days == 'Tuesday') {
+      data.days = "0010000";
+  }
+  else if(data.days == 'Wednesday'){
+      data.days = "0001000";
+  }
+  else if(data.days == 'Thursday'){
+      data.days = "0000100";
+  }
+  else if(data.days == 'Friday'){
+      data.days = "0000010";
+  }
+  else if(data.days == 'Saturday'){
+      data.days = "0000001";
   }
   console.info(data);
   $.post('/api/lift/update', data, function(res, status){
@@ -144,7 +163,7 @@ var deleteLift = function(gymactivityId){
       }
       else{
           getAllUserLifts();
-        
+
       }
     });
 };
@@ -164,25 +183,25 @@ var liftCalendar = function(){
             var gymactivity_id = lift.gym_activity_id;
             var name = (lift.name) ? lift.name : "N/a";
             var days = (lift.days) ? lift.days : "N/a";
-            if( days == "Sunday"){
+            if( days == "1000000"){
                 $("#SunCal").append(`<h3>${name}</h3>`);
             }
-            if( days == "Monday"){
+            if( days == "0100000"){
                 $("#MonCal").append(`<h3>${name}</h3>`);
             }
-            if( days == "Tuesday"){
+            if( days == "0010000"){
                 $("#TuesCal").append(`<h3>${name}</h3>`);
             }
-            if( days == "Wednesday"){
+            if( days == "0001000"){
                 $("#WedCal").append(`<h3>${name}</h3>`);
             }
-            if( days == "Thursda"){
+            if( days == "0000100"){
                 $("#ThursCal").append(`<h3>${name}</h3>`);
             }
-            if( days == "Friday"){
+            if( days == "0000010"){
                 $("#fridCal").append(`<h3>${name}</h3>`);
             }
-            if( days == "Saturday"){
+            if( days == "0000001"){
                 $("#SatCal").append(`<h3>${name}</h3>`);
             }
         }
