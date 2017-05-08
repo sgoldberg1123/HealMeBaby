@@ -162,6 +162,14 @@ var liftCalendar = function(){
     }
     else{
         console.info(res.data);
+        $("#SunCal").empty();
+        $("#MonCal").empty();
+        $("#TuesCal").empty();
+        $("#WedCal").empty();
+        $("#ThursCal").empty();
+        $("#FridCal").empty();
+        $("#SatCal").empty();
+
         for(var i = 0; i<res.data.length; i++){
             var lift = res.data[i];
             var gymactivity_id = lift.gym_activity_id;
@@ -183,7 +191,7 @@ var liftCalendar = function(){
                 $("#ThursCal").append(`<h3>${name}</h3>`);
             }
             if( days == "Friday"){
-                $("#fridCal").append(`<h3>${name}</h3>`);
+                $("#FridCal").append(`<h3>${name}</h3>`);
             }
             if( days == "Saturday"){
                 $("#SatCal").append(`<h3>${name}</h3>`);
