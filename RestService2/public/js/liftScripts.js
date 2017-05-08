@@ -9,10 +9,11 @@ var getAllUserLifts = function(){
         console.log("Get lifts failed");
     }
     else{
+        console.info(res.data);
         $("#LiftTableBody").empty();
         for(var i = 0; i<res.data.length; i++){
         var lift = res.data[i];
-        var gymactivity_id = lift.gymactivity_id;
+        var gymactivity_id = lift.gym_activity_id;
         var name = (lift.name) ? lift.name : "N/a";
         var reps = (lift.reps) ? lift.reps : "N/a";
         var weight = (lift.weight) ? lift.weight : "N/a";
@@ -25,7 +26,7 @@ var getAllUserLifts = function(){
                 <td>${reps}</td>
                 <td>${weight}</td>
                 <td>${days}</td>
-                
+
                 <td><button class="btn btn-warning btn-sm" data-toggle="tooltip" title="Edit This Lift" onclick="editLift(${gymactivity_id})"><span class="glyphicon glyphicon-pencil"></span></button></td>
                 <td><button class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete This Meal" onclick="deleteLift(${gymactivity_id})"><span class="glyphicon glyphicon-remove"></span></button></td>
             </tr>
@@ -51,10 +52,11 @@ var newLiftSubmit = function(){
   $.post('/api/lift/insert', data, function(res, status){
     if(res.status == 'FAILED'){
         console.log(data);
-        console.log(res.error)
+        console.log(res.error);
         console.log("Insert lift failed(liftScript.js)");
     }
     else{
+        console.info(data);
       $('#addLiftModal').modal('hide');
       getAllUserLifts();
     }
@@ -69,14 +71,43 @@ var editLift = function(gymactivity_id){
     },
     function(res, status){
         var gymactivity = res.data;
-        console.info(gymactivity);
+        var id = gymactivity.gym_activity_id;
         var name = (gymactivity.name) ? gymactivity.name : "";
         var reps = (gymactivity.reps) ? gymactivity.reps : "";
         var weight = (gymactivity.weight) ? gymactivity.weight : "";
         var days = (gymactivity.days) ? gymactivity.days : "";
+        console.info("id", id);
         $("#editName").val(name);
-        $("editReps").val(reps);
-        $("editWeight").val(weight);
-        $("editDays").val(days);
+        $("#editReps").val(reps);
+        $("#editWeight").val(weight);
+        $("#editDays").val(days);
+        $("#editLiftId").val(id);
+        $("#editLiftModal").modal('show');
     });
+};
+
+//Submit the edited activity form
+var editLiftSubmit = function(){
+  var data = {
+    JWT: sessionStorage.token,
+    gymactivity_id: $('#editLiftId')[0].value,
+    name: $('#editName')[0].value,
+    reps: $('#editReps')[0].value,
+    weight: $('#editWeight')[0].value,
+    days: $('#editDays')[0].value
+  };
+  if(data.days == "Sunday"){
+      data.days = "1";
+  }
+  console.info(data);
+  $.post('/api/lift/update', data, function(res, status){
+    if(res.status == 'FAILED'){
+      console.log("Update lift failed");
+      console.info(res.error);
+    }
+    else{
+      $('#editLiftModal').modal('hide');
+      getAllUserLifts();
+    }
+  });
 };

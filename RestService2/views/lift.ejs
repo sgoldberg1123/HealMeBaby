@@ -82,7 +82,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Add a New Lift</h4>
+          <h4 class="modal-title">Edit Lift</h4>
         </div><!-- Modal Header -->
 
         <div class="modal-body">
@@ -92,7 +92,7 @@
           </div><!-- form-group -->
           <div class="form-group">
             <label for="reps">Reps</label>
-            <input class="form-control" name="reps" id="editReps" />>
+            <input class="form-control" name="reps" id="editReps" />
           </div><!-- form-group -->
           <div class="form-group">
             <label for="weight">Weight</label>
@@ -110,11 +110,13 @@
               <option>Saturday</option>
             </select>
           </div><!-- form-group -->
+          <input type="hidden" id="editLiftId" name="gymactivity_id">
+
         </div><!-- Modal body -->
 
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" onclick='editLiftSubmit();' class="btn btn-primary">Add Lift</button>
+          <button type="submit" onclick='editLiftSubmit();' class="btn btn-primary">EditLift</button>
         </div><!-- Modal Footer -->
       </div><!-- Modal Content -->
     </form>
