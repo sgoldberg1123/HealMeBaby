@@ -44,22 +44,32 @@ $(document).ready(function(){
     }
   } else if(url == 'health'){
     if(!isLoggedin){
-      sessionStorage.prevpage = '/profile';
+      sessionStorage.prevpage = '/health';
       window.location.href = '/login';
     }
   } else if(url == 'meals'){
     if(!isLoggedin){
-      sessionStorage.prevpage = '/profile';
+      sessionStorage.prevpage = '/meals';
       window.location.href = '/login';
     }
   } else if(url == 'activities'){
     if(!isLoggedin){
-      sessionStorage.prevpage = '/profile';
+      sessionStorage.prevpage = '/activities';
       window.location.href = '/login';
     }
   } else if(url == 'pedometer'){
     if(!isLoggedin){
-      sessionStorage.prevpage = '/profile';
+      sessionStorage.prevpage = '/pedometer';
+      window.location.href = '/login';
+    }
+  } else if(url == 'chart'){
+    if(!isLoggedin){
+      sessionStorage.prevpage = '/chart';
+      window.location.href = '/login';
+    }
+  } else if(url == 'lift'){
+    if(!isLoggedin){
+      sessionStorage.prevpage = '/lift';
       window.location.href = '/login';
     }
   }
