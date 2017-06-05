@@ -2,9 +2,9 @@
 //change to localhost and make passwords more secure for final product
 var config = {};
 config.dbConnection = {
-  host: '71.95.85.102',
-  user: 'test',
-  password: 'health123',
+  host: '129.144.188.18',
+  user: 'root',
+  password: 'Fest@100',
   dateStrings: true
 };
 

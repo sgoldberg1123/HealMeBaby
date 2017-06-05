@@ -1,6 +1,6 @@
 // config and package imports ===================================================
 var express = require('express');                 // nodejs framework
-var port = 8090;                                  // port
+var port = process.env.PORT || 8080;     
 var passport = require('passport');               // authentication middleware
 var morgan = require('morgan');                   // console logging logging
 var cookieParser = require('cookie-parser');      // parse cookie info
